@@ -1,0 +1,12 @@
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      # Pinned to the v0.3 release so builds don't break when ZMK's main branch changes.
+      revision: v0.3
+      import: app/west.yml
+  self:
+    path: config
