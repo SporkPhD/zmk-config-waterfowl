@@ -12,6 +12,7 @@
  *
  * sensor-bindings are the rotations, in order:
  *   left roller, left dial, right dial, right roller
+ * The rollers spin side to side.
  */
 
 #include <behaviors.dtsi>
@@ -46,6 +47,11 @@
 #define MISSION   LC(UP)
 #define SPOTLIGHT LG(SPACE)
 #define SHOT      LG(LS(N4))
+
+// One roller click = one scroll step. Each click is a 30 ms tap and mouse
+// scrolling runs in 16 ms ticks, so the speed has to cover a whole step in one
+// tick (63 x 16 / 1000 = 1); ZMK's default of 10 never adds up to a step.
+#define ROLLER_SCROLL 63
 
 &lt {
     quick-tap-ms = <175>;
@@ -90,14 +96,14 @@
         scroll_enc: scroll_encoder {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+            bindings = <&msc MOVE_Y(-ROLLER_SCROLL)>, <&msc MOVE_Y(ROLLER_SCROLL)>;
             tap-ms = <30>;
         };
 
         hscroll_enc: horizontal_scroll_encoder {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_RIGHT>, <&msc SCRL_LEFT>;
+            bindings = <&msc MOVE_X(ROLLER_SCROLL)>, <&msc MOVE_X(-ROLLER_SCROLL)>;
             tap-ms = <30>;
         };
 
@@ -138,7 +144,7 @@
     &kp MISSION    &lt FN ESC     &lt NAV SPACE  &kp TAB        &kp C_MUTE       &kp C_PP  &lt SYM RET  &lt NUM BSPC   &lt FN DEL     &kp SPOTLIGHT
             >;
 
-            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp DOWN UP>;
+            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp LEFT RIGHT>;
         };
 
         nav_layer {
@@ -174,7 +180,7 @@
     &trans         &kp DOT        &kp N0         &kp MINUS      &trans           &trans  &none          &trans         &none          &trans
             >;
 
-            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp DOWN UP>;
+            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp LEFT RIGHT>;
         };
 
         sym_layer {
@@ -192,7 +198,7 @@
     &trans         &kp LPAR       &kp RPAR       &kp UNDER      &trans           &trans  &trans         &none          &none          &trans
             >;
 
-            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp DOWN UP>;
+            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp LEFT RIGHT>;
         };
 
         fn_layer {
@@ -211,7 +217,7 @@
     &trans         &trans         &none          &none          &trans           &trans        &none         &none         &trans        &trans
             >;
 
-            sensor-bindings = <&scroll_enc &inc_dec_kp C_BRI_DN C_BRI_UP &zoom_enc &inc_dec_kp DOWN UP>;
+            sensor-bindings = <&scroll_enc &inc_dec_kp C_BRI_DN C_BRI_UP &zoom_enc &inc_dec_kp LEFT RIGHT>;
         };
 
         // Spare layers: turn these on and name them in ZMK Studio.
