@@ -32,11 +32,11 @@
 #define THUMBS 30 31 32 33 34 35 36 37 38 39
 
 // macOS shortcuts
-#define UNDO      LG(Z)
-#define CUT       LG(X)
-#define COPY      LG(C)
-#define PASTE     LG(V)
-#define REDO      LG(LS(Z))
+#define MAC_UNDO      LG(Z)
+#define MAC_CUT       LG(X)
+#define MAC_COPY      LG(C)
+#define MAC_PASTE     LG(V)
+#define MAC_REDO      LG(LS(Z))
 #define LINE_BEG  LG(LEFT)
 #define LINE_END  LG(RIGHT)
 #define WORD_BCK  LA(LEFT)
@@ -152,7 +152,7 @@
             bindings = <
     &none          &none          &none          &none          &none            &kp LINE_BEG  &kp PG_DN     &kp PG_UP     &kp LINE_END  &none
     &kp LCTRL      &kp LALT       &kp LGUI       &kp LSHFT      &none            &kp LEFT      &kp DOWN      &kp UP        &kp RIGHT     &caps_word
-    &kp UNDO       &kp CUT        &kp COPY       &kp PASTE      &kp REDO         &kp WORD_BCK  &kp TAB_PREV  &kp TAB_NEXT  &kp WORD_FWD  &none
+    &kp MAC_UNDO       &kp MAC_CUT        &kp MAC_COPY       &kp MAC_PASTE      &kp MAC_REDO         &kp WORD_BCK  &kp TAB_PREV  &kp TAB_NEXT  &kp WORD_FWD  &none
     &trans         &none          &trans         &none          &trans           &trans        &kp RET       &kp BSPC      &kp DEL       &trans
             >;
 

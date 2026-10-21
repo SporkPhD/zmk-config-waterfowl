@@ -1,4 +1,4 @@
-# Makes this config repo a Zephyr module, so the custom screen code in src/ is built.
+# Makes this config repo a Zephyr module, so the screen code in src/ is built.
 name: waterfowl-extras
 build:
   cmake: .

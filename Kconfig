@@ -1,20 +1,9 @@
-config WATERFOWL_PERIPHERAL_BONGO_CAT
-    bool "Bongo Cat on the right screen, tapping along with that half's key presses"
-    depends on ZMK_DISPLAY && ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL
-    depends on NICE_OLED_WIDGET_STATUS
-
-if WATERFOWL_PERIPHERAL_BONGO_CAT
-
-config WATERFOWL_PERIPHERAL_BONGO_CAT_X
-    int "Bongo Cat X position on the screen (unrotated pixels)"
-    default 0
-
-config WATERFOWL_PERIPHERAL_BONGO_CAT_Y
-    int "Bongo Cat Y position on the screen (unrotated pixels)"
-    default 7
-
-config WATERFOWL_PERIPHERAL_BONGO_CAT_REST_MS
-    int "How long a paw stays down after a key press"
-    default 150
-
-endif
+config WATERFOWL_SCREENS
+    bool "Waterfowl's own OLED screens (src/), drawn for its upright 128x64 panels"
+    depends on ZMK_DISPLAY && ZMK_DISPLAY_STATUS_SCREEN_CUSTOM
+    default y
+    select LV_USE_IMG
+    select LV_USE_CANVAS
+    select LV_FONT_UNSCII_8
+    select LV_FONT_UNSCII_16
+    select ZMK_WPM if !ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL

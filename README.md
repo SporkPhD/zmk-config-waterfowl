@@ -9,8 +9,10 @@ The layout is a Mac-flavored take on Miryoku: home-row modifiers (Ctrl, Opt, Cmd
 | `config/waterfowl.keymap` | The keymap: Base, Nav, Num, Sym and Fn layers plus 3 spare layers for Studio |
 | `config/waterfowl_layout.dtsi` | The key-position map Studio uses to draw the keyboard (included by `waterfowl_left.overlay` and `waterfowl_right.overlay`) |
 | `config/waterfowl.conf` | Turns on the rollers, dials and screens (both halves) |
-| `config/waterfowl_left.conf`, `config/waterfowl_right.conf` | What each screen shows |
-| `src/peripheral_bongo_cat.c` | Bongo Cat on the right screen, tapping along with that half's keys |
+| `config/waterfowl_left.conf` | Left-half extras: roller scrolling, fetching the right half's battery |
+| `config/waterfowl_right.overlay` | Flips the right screen, which is mounted the other way round |
+| `src/` | The two OLED screens, drawn for the Waterfowl's upright 64 × 128 panels |
+| `tools/make_art.py` | Draws the duck and modifier icons into `src/art.c` |
 | `config/info.json` | Same key positions, for Keymap Editor |
 | `build.yaml` | What GitHub builds: left (with Studio), right, settings reset |
 | `firmware/` | Firmware built locally with Docker (ignored by git) |
@@ -80,4 +82,9 @@ The first time, flash **both** halves so they run the same ZMK version.
 
 ## Screens
 
-The left screen shows the layer, Bluetooth profile or USB, both batteries, Mac modifier symbols, Caps Lock and typing speed. The right screen shows its battery, its link to the left half and a Bongo Cat that taps a paw for each key you press on the right half. Both screens turn off when you stop typing.
+Both screens are this repo's own code (`src/`), laid out for the Waterfowl's 128×64 OLEDs mounted upright. Each screen is drawn on a 64×128 canvas and rotated onto the panel.
+
+- **Left:** USB or Bluetooth profile (dot filled when the Mac is connected), battery for both halves, layer name, Ctrl/Opt/Cmd/Shift while held, Bongo Cat tapping along with every key press, and typing speed.
+- **Right:** link to the left half, its battery, and a pixel-art duck. It only redraws when the battery or link changes.
+
+Both screens turn off when you stop typing. To change the duck or the icons, edit `tools/make_art.py` and run `python3 tools/make_art.py`. Bongo Cat's frames come from [zmk-nice-oled](https://github.com/mctechnology17/zmk-nice-oled) (MIT).
