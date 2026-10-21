@@ -1,1 +1,12 @@
 #include "waterfowl_layout.dtsi"
+
+// The right half's screen module is mounted the other way round from the
+// left's (its pins face the other side), so flip it 180 degrees. This file is
+// read before the shield defines &oled, so the screen is addressed by its
+// place on the I2C bus instead.
+&pro_micro_i2c {
+    ssd1306@3c {
+        segment-remap;
+        com-invdir;
+    };
+};
