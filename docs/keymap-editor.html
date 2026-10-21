@@ -1,0 +1,657 @@
+<title>Waterfowl Keymap</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a tool page. Status bar, layer tabs, the board drawn at its real geometry, then the editor for the selected key. */
+:root {
+  --paper: #f5f7f4;
+  --ink: #141a17;
+  --muted: #5a6661;
+  --rule: #d6ddd8;
+  --cap: #ffffff;
+  --cap-edge: #c5cec9;
+  --cap-dim: #eef1ee;
+  --mallard: #1d6b57;
+  --mallard-soft: #d7ebe4;
+  --bill: #b9790f;
+  --bill-soft: #f7ead2;
+  --sel: #1d6b57;
+  --sel-ink: #ffffff;
+  --changed: #c2410c;
+  --display: "Zen Kaku Gothic New", "Hiragino Sans", "Segoe UI", sans-serif;
+  --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111614; --ink: #e8eeea; --muted: #9aa8a1; --rule: #2a332f;
+    --cap: #1d2421; --cap-edge: #34403b; --cap-dim: #161c19;
+    --mallard: #5cc3a2; --mallard-soft: #17332a; --bill: #e6ad48; --bill-soft: #33280f;
+    --sel: #2f8f73; --sel-ink: #ffffff; --changed: #fb923c; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111614; --ink: #e8eeea; --muted: #9aa8a1; --rule: #2a332f;
+  --cap: #1d2421; --cap-edge: #34403b; --cap-dim: #161c19;
+  --mallard: #5cc3a2; --mallard-soft: #17332a; --bill: #e6ad48; --bill-soft: #33280f;
+  --sel: #2f8f73; --sel-ink: #ffffff; --changed: #fb923c; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 64px;
+}
+main { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.2; text-wrap: balance; }
+h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 900; }
+h2 { font-size: 1.25rem; font-weight: 700; }
+h3 { font-size: 1rem; font-weight: 700; }
+p { margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+button:focus-visible, select:focus-visible, input:focus-visible, .k:focus-visible { outline: 3px solid var(--bill); outline-offset: 2px; }
+kbd { font-family: var(--mono); font-size: 0.85em; background: var(--cap); border: 1px solid var(--cap-edge); border-bottom-width: 2px; border-radius: 5px; padding: 0 5px; }
+
+header { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between; }
+header .lede { color: var(--muted); max-width: 60ch; }
+.status { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; flex-wrap: wrap; }
+.pill { font: 600 0.75rem var(--mono); letter-spacing: 0.04em; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap; }
+.pill.ok { color: var(--mallard); border-color: var(--mallard); background: var(--mallard-soft); }
+.pill.warn { color: var(--bill); border-color: var(--bill); background: var(--bill-soft); }
+.pill.chg { color: var(--changed); border-color: var(--changed); }
+
+.tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; align-items: center; }
+.tabs button { flex: none; background: var(--cap); border: 1px solid var(--cap-edge); border-bottom-width: 3px; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-weight: 600; }
+.tabs button[aria-pressed="true"] { background: var(--sel); border-color: var(--sel); color: var(--sel-ink); }
+.tabs .add { color: var(--mallard); border-style: dashed; }
+.tabs .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--changed); margin-left: 6px; vertical-align: middle; }
+
+.board-wrap { overflow-x: auto; background: var(--cap-dim); border: 1px solid var(--rule); border-radius: 12px; padding: 12px; }
+.board { display: block; width: 100%; min-width: 680px; height: auto; }
+.k { cursor: pointer; }
+.k:hover rect.face, .k:hover circle.face { stroke: var(--mallard); }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.82rem; color: var(--muted); }
+.legend span { display: inline-flex; gap: 6px; align-items: center; }
+.sw { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--cap-edge); background: var(--cap); display: inline-block; }
+.sw.sel { background: var(--sel); border-color: var(--sel); }
+.sw.chg { border: 2px solid var(--changed); }
+
+.editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; background: var(--cap); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; }
+@media (max-width: 760px) { .editor { grid-template-columns: minmax(0, 1fr); } }
+.editor > section { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.ed-title { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.ed-title small { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; }
+.choices { display: flex; flex-wrap: wrap; gap: 6px; }
+.choices button, .grid button, .presets button { background: var(--paper); border: 1px solid var(--cap-edge); border-radius: 7px; padding: 5px 10px; cursor: pointer; }
+.choices button[aria-pressed="true"], .grid button[aria-pressed="true"], .presets button[aria-pressed="true"] { background: var(--sel); border-color: var(--sel); color: var(--sel-ink); }
+.explain { font-size: 0.92rem; color: var(--muted); border-left: 3px solid var(--mallard); padding-left: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.row label { font-size: 0.9rem; color: var(--muted); }
+select, input[type="search"], input[type="text"] { background: var(--paper); border: 1px solid var(--cap-edge); border-radius: 7px; padding: 5px 8px; max-width: 100%; }
+.grid { display: flex; flex-wrap: wrap; gap: 5px; max-height: 260px; overflow-y: auto; padding: 2px; }
+.grid button { font-family: var(--mono); font-size: 0.85rem; min-width: 38px; padding: 4px 8px; }
+.grp { font-size: 0.72rem; font-family: var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); width: 100%; margin-top: 4px; }
+.presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 6px; }
+.presets button { text-align: left; display: flex; justify-content: space-between; gap: 6px; }
+.presets button small { font-family: var(--mono); opacity: 0.75; }
+.mods { display: flex; gap: 6px; flex-wrap: wrap; }
+.mods label { display: inline-flex; gap: 5px; align-items: center; background: var(--paper); border: 1px solid var(--cap-edge); border-radius: 7px; padding: 4px 9px; cursor: pointer; font-size: 0.9rem; color: var(--ink); }
+.empty { color: var(--muted); font-size: 0.95rem; }
+.flash { border: 1px solid var(--mallard); background: var(--mallard-soft); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.flash code { font-family: var(--mono); font-size: 0.9em; }
+.changes { margin: 0; padding-left: 1.2em; font-size: 0.92rem; color: var(--muted); }
+details.glossary { border-top: 1px solid var(--rule); padding-top: 14px; }
+details.glossary summary { cursor: pointer; font-family: var(--display); font-weight: 700; font-size: 1.1rem; }
+.gl { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr); gap: 6px 16px; margin-top: 12px; font-size: 0.93rem; }
+.gl dt { font-family: var(--mono); font-size: 0.85rem; color: var(--mallard); }
+.gl dd { margin: 0; color: var(--muted); }
+.layer-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 0.9rem; }
+.layer-tools button { background: none; border: none; color: var(--mallard); cursor: pointer; padding: 2px 4px; text-decoration: underline; text-underline-offset: 3px; }
+.layer-tools button.danger { color: var(--changed); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main>
+  <header>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <h1>Waterfowl Keymap</h1>
+      <p class="lede">Click a key, roller or dial, then choose what it does. Changes save as you go. When you're happy, tell Claude <b>"flash my keymap"</b>.</p>
+    </div>
+    <div class="status" aria-live="polite">
+      <span class="pill" id="save-pill">Connecting…</span>
+      <span class="pill" id="change-pill" hidden></span>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" aria-label="Layers"></nav>
+  <div class="layer-tools" id="layer-tools"></div>
+
+  <div class="board-wrap"><svg class="board" id="board" role="group" aria-label="Keyboard"></svg></div>
+  <div class="legend">
+    <span><i class="sw sel"></i>Selected</span>
+    <span><i class="sw chg"></i>Changed since the last flash</span>
+    <span>Orange text: what happens when held</span>
+    <span>Dimmed: same as the layer below</span>
+  </div>
+
+  <div class="editor" id="editor"><p class="empty">Pick a key on the keyboard to change it.</p></div>
+
+  <div class="flash" id="flash-box">
+    <h3>Putting it on the keyboard</h3>
+    <p>Tell Claude <b>"flash my keymap"</b>. Claude reads this page, builds the firmware and tells you when to plug in the left half and put it into flashing mode. Keymap changes only ever need the left half.</p>
+    <ul class="changes" id="change-list"></ul>
+  </div>
+
+  <details class="glossary">
+    <summary>What the options mean (and Studio's names for them)</summary>
+    <dl class="gl" id="glossary"></dl>
+  </details>
+</main>
+
+<script>
+// ---------- Board geometry: key centres in key units, rotation in degrees (from the switch plate drawing) ----------
+const GEO = [[0.75,1.743,0,"k"],[1.75,1.0,0,"k"],[2.75,0.75,0,"k"],[3.75,1.125,0,"k"],[4.75,1.25,0,"k"],[11.344,1.25,0,"k"],[12.344,1.125,0,"k"],[13.344,0.75,0,"k"],[14.344,1.0,0,"k"],[15.344,1.743,0,"k"],[0.75,2.743,0,"k"],[1.75,2.0,0,"k"],[2.75,1.75,0,"k"],[3.75,2.125,0,"k"],[4.75,2.25,0,"k"],[11.344,2.25,0,"k"],[12.344,2.125,0,"k"],[13.344,1.75,0,"k"],[14.344,2.0,0,"k"],[15.344,2.743,0,"k"],[0.75,3.743,0,"k"],[1.75,3.0,0,"k"],[2.75,2.75,0,"k"],[3.75,3.125,0,"k"],[4.75,3.25,0,"k"],[11.344,3.25,0,"k"],[12.344,3.125,0,"k"],[13.344,2.75,0,"k"],[14.344,3.0,0,"k"],[15.344,3.743,0,"k"],[2.75,4.011,0,"r"],[4.143,4.281,15,"k"],[5.166,4.705,30,"k"],[6.044,5.378,45,"k"],[6.25,3.25,0,"d"],[9.844,3.25,0,"d"],[10.05,5.378,-45,"k"],[10.928,4.705,-30,"k"],[11.952,4.281,-15,"k"],[13.344,4.011,0,"r"]];
+const BOARD_W = 16.094, BOARD_H = 6.128, U = 56;
+// Rotations: [left roller, left dial, right dial, right roller] and the key position of each one's press.
+const ENC_POS = [30, 34, 35, 39];
+const ENC_NAMES = ["Left roller", "Left dial", "Right dial", "Right roller"];
+const POS_NAME = i => i === 30 ? "Left roller" : i === 34 ? "Left dial" : i === 35 ? "Right dial" : i === 39 ? "Right roller"
+  : [31, 32, 33].includes(i) ? ["Left outer", "Left middle", "Left inner"][i - 31] + " thumb"
+  : [36, 37, 38].includes(i) ? ["Right inner", "Right middle", "Right outer"][i - 36] + " thumb"
+  : (i % 10 < 5 ? "Left" : "Right") + " hand, " + ["top", "home", "bottom"][Math.floor(i / 10)] + " row";
+const HOME_ROW = [10, 11, 12, 13, 16, 17, 18, 19];
+
+// ---------- Key catalogue (ZMK key names) ----------
+const KEYS = [];
+function addKeys(group, list) { list.forEach(([code, label, words]) => KEYS.push({ code, label, group, words: (words || "") + " " + label + " " + code })); }
+addKeys("Letters", "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(c => [c, c]));
+addKeys("Numbers", "0123456789".split("").map(n => ["N" + n, n]));
+addKeys("Punctuation", [["MINUS","-","dash hyphen"],["EQUAL","=","equals"],["LBKT","[","bracket"],["RBKT","]","bracket"],["BSLH","\\","backslash"],["SEMI",";","semicolon"],["SQT","'","apostrophe quote"],["GRAVE","`","backtick grave"],["COMMA",",","comma"],["DOT",".","period dot"],["FSLH","/","slash"]]);
+addKeys("Symbols", [["EXCL","!","exclamation"],["AT","@","at"],["HASH","#","hash pound"],["DLLR","$","dollar"],["PRCNT","%","percent"],["CARET","^","caret"],["AMPS","&","ampersand"],["STAR","*","asterisk star"],["LPAR","(","paren"],["RPAR",")","paren"],["UNDER","_","underscore"],["PLUS","+","plus"],["LBRC","{","brace"],["RBRC","}","brace"],["PIPE","|","pipe"],["COLON",":","colon"],["DQT","\"","double quote"],["TILDE","~","tilde"],["LT","<","less than"],["GT",">","greater than"],["QMARK","?","question"]]);
+addKeys("Editing", [["SPACE","Space"],["RET","Enter","return"],["BSPC","Bksp","backspace delete"],["DEL","Del","forward delete"],["TAB","Tab"],["ESC","Esc","escape"],["CAPS","Caps Lock"]]);
+addKeys("Navigation", [["LEFT","←","left arrow"],["DOWN","↓","down arrow"],["UP","↑","up arrow"],["RIGHT","→","right arrow"],["HOME","Home"],["END","End"],["PG_UP","PgUp","page up"],["PG_DN","PgDn","page down"]]);
+addKeys("Function keys", Array.from({ length: 19 }, (_, i) => ["F" + (i + 1), "F" + (i + 1)]));
+addKeys("Media & screen", [["C_VOL_UP","Vol +","volume up"],["C_VOL_DN","Vol −","volume down"],["C_MUTE","Mute"],["C_PP","Play/Pause","play pause"],["C_NEXT","Next","next track"],["C_PREV","Prev","previous track"],["C_BRI_UP","Bright +","brightness up"],["C_BRI_DN","Bright −","brightness down"]]);
+const KEY_BY = Object.fromEntries(KEYS.map(k => [k.code, k]));
+const MODS = [["cmd", "Cmd", "⌘"], ["opt", "Opt", "⌥"], ["ctrl", "Ctrl", "⌃"], ["shift", "Shift", "⇧"]];
+const MOD_SYM = Object.fromEntries(MODS.map(m => [m[0], m[2]]));
+const MOD_NAME = Object.fromEntries(MODS.map(m => [m[0], m[1]]));
+
+// Mac shortcuts, shown by name when a key matches one.
+const SHORTCUTS = [
+  ["Copy", "C", ["cmd"]], ["Paste", "V", ["cmd"]], ["Cut", "X", ["cmd"]], ["Undo", "Z", ["cmd"]], ["Redo", "Z", ["cmd", "shift"]],
+  ["Select all", "A", ["cmd"]], ["Save", "S", ["cmd"]], ["Find", "F", ["cmd"]], ["New tab", "T", ["cmd"]], ["Close tab", "W", ["cmd"]],
+  ["Reopen tab", "T", ["cmd", "shift"]], ["Next tab", "TAB", ["ctrl"]], ["Prev tab", "TAB", ["ctrl", "shift"]],
+  ["Line start", "LEFT", ["cmd"]], ["Line end", "RIGHT", ["cmd"]], ["Word ←", "LEFT", ["opt"]], ["Word →", "RIGHT", ["opt"]],
+  ["Doc top", "UP", ["cmd"]], ["Doc bottom", "DOWN", ["cmd"]], ["Zoom in", "EQUAL", ["cmd"]], ["Zoom out", "MINUS", ["cmd"]],
+  ["Spotlight", "SPACE", ["cmd"]], ["Mission Ctrl", "UP", ["ctrl"]], ["App windows", "DOWN", ["ctrl"]], ["Emoji", "SPACE", ["ctrl", "cmd"]],
+  ["Shot area", "N4", ["cmd", "shift"]], ["Shot menu", "N5", ["cmd", "shift"]], ["Lock screen", "Q", ["ctrl", "cmd"]], ["Quit app", "Q", ["cmd"]],
+];
+const sameMods = (a, b) => (a || []).slice().sort().join() === (b || []).slice().sort().join();
+
+const ENC_PRESETS = [
+  ["inherit", "Same as Base"], ["volume", "Volume down / up"], ["brightness", "Brightness down / up"], ["scroll_v", "Scroll down / up"],
+  ["scroll_h", "Scroll right / left"], ["arrows_lr", "Cursor left / right"], ["arrows_ud", "Cursor down / up"], ["words", "Word right / left"],
+  ["tabs", "Next / previous tab"], ["zoom", "Zoom in / out"], ["pages", "Page down / up"], ["undo", "Undo / redo"], ["none", "Nothing"],
+];
+const ENC_LABEL = Object.fromEntries(ENC_PRESETS);
+
+// ---------- Labels ----------
+function keyLabel(k) { return k && KEY_BY[k] ? KEY_BY[k].label : (k || "?"); }
+function chordLabel(key, mods) {
+  const sc = SHORTCUTS.find(s => s[1] === key && sameMods(s[2], mods));
+  if (sc) return sc[0];
+  return (mods || []).map(m => MOD_SYM[m]).join("") + keyLabel(key);
+}
+function layerName(id) { const l = state.doc.layers.find(x => x.id === id); return l ? l.name : "?"; }
+const BT_LABEL = { sel: n => "BT " + (n + 1), clr: () => "BT clear", next: () => "BT next", prev: () => "BT prev" };
+const SYS_LABEL = { bootloader: "BOOT", reset: "Restart", studio: "Studio unlock", capsword: "Caps Word", repeat: "Repeat", usbbt: "USB/BT" };
+function label(b) {
+  if (!b) return { tap: "" };
+  switch (b.t) {
+    case "key": return { tap: chordLabel(b.key, b.mods) };
+    case "hold": return { tap: chordLabel(b.tap.key, b.tap.mods), hold: b.hold.layer ? layerName(b.hold.layer) : MOD_NAME[b.hold.mod] };
+    case "layer": return { tap: layerName(b.layer), hold: { hold: "hold", switch: "switch", toggle: "toggle", once: "next key" }[b.how] };
+    case "mod": return { tap: MOD_NAME[b.mod], hold: b.sticky ? "sticky" : null };
+    case "bt": return { tap: BT_LABEL[b.action](b.n) };
+    case "sys": return { tap: SYS_LABEL[b.action] };
+    case "mouse": return { tap: { left: "Click", right: "Right click", middle: "Mid click" }[b.button] };
+    case "trans": return { tap: "", trans: true };
+    case "none": return { tap: "—" };
+  }
+  return { tap: "?" };
+}
+function describe(b) {
+  if (!b) return "";
+  switch (b.t) {
+    case "key": return b.mods && b.mods.length ? "Types " + chordLabel(b.key, b.mods) + " (" + b.mods.map(m => MOD_NAME[m]).join("+") + "+" + keyLabel(b.key) + ")." : "Types " + keyLabel(b.key) + ".";
+    case "hold": return "Tap for " + chordLabel(b.tap.key, b.tap.mods) + ", hold for " + (b.hold.layer ? "the " + layerName(b.hold.layer) + " layer" : MOD_NAME[b.hold.mod]) + ".";
+    case "layer": return { hold: "Turns on the " + layerName(b.layer) + " layer while held.", switch: "Switches to the " + layerName(b.layer) + " layer and stays there.", toggle: "Turns the " + layerName(b.layer) + " layer on, or off if it's already on.", once: "Turns on the " + layerName(b.layer) + " layer for the next key only." }[b.how];
+    case "mod": return b.sticky ? "Tap, then " + MOD_NAME[b.mod] + " applies to the next key you press." : "Acts as " + MOD_NAME[b.mod] + " while held.";
+    case "trans": return "Does whatever this key does on the layer below.";
+    case "none": return "Does nothing, and blocks the layer below.";
+  }
+  return "";
+}
+
+// ---------- State ----------
+const state = { doc: null, flashed: null, layer: 0, sel: null, saving: "idle", db: null, error: null };
+let saveTimer = null, writing = false, pendingWrite = false;
+
+function changedKey(li, pos) {
+  if (!state.flashed) return false;
+  const L = state.doc.layers[li], F = state.flashed.layers.find(x => x.id === L.id);
+  if (!F) return true;
+  return JSON.stringify(L.keys[pos]) !== JSON.stringify(F.keys[pos]);
+}
+function changedEnc(li, e) {
+  if (!state.flashed) return false;
+  const L = state.doc.layers[li], F = state.flashed.layers.find(x => x.id === L.id);
+  if (!F) return true;
+  return JSON.stringify(L.enc[e]) !== JSON.stringify(F.enc[e]);
+}
+function changeSummary() {
+  if (!state.doc || !state.flashed) return [];
+  const out = [];
+  const fl = state.flashed.layers;
+  state.doc.layers.forEach((L, li) => {
+    const F = fl.find(x => x.id === L.id);
+    if (!F) { out.push("New layer: " + L.name); return; }
+    if (F.name !== L.name) out.push("Renamed " + F.name + " → " + L.name);
+    L.keys.forEach((b, p) => { if (JSON.stringify(b) !== JSON.stringify(F.keys[p])) out.push(L.name + ": " + POS_NAME(p) + " (" + (label(F.keys[p]).tap || "same as below") + " → " + (label(b).tap || "same as below") + ")"); });
+    L.enc.forEach((e, i) => { if (JSON.stringify(e) !== JSON.stringify(F.enc[i])) out.push(L.name + ": " + ENC_NAMES[i] + " turn"); });
+  });
+  fl.forEach(F => { if (!state.doc.layers.find(x => x.id === F.id)) out.push("Removed layer: " + F.name); });
+  return out;
+}
+
+function edit(fn) {
+  fn(state.doc);
+  state.doc.updatedAt = new Date().toISOString();
+  render();
+  scheduleSave();
+}
+function scheduleSave() {
+  if (!state.db) { setPill(); return; }
+  state.saving = "pending"; setPill();
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(save, 600);
+}
+async function save() {
+  if (writing) { pendingWrite = true; return; }
+  writing = true; state.saving = "saving"; setPill();
+  try {
+    await state.db.doc("keymap/current").set(JSON.parse(JSON.stringify(state.doc)));
+    state.saving = "saved"; state.error = null;
+  } catch (e) {
+    state.saving = "error"; state.error = e && e.code === "invalid_argument" ? "You can view this layout but not change it." : "Couldn't save. Your last change is still on screen; try again in a moment.";
+  }
+  writing = false; setPill();
+  if (pendingWrite) { pendingWrite = false; save(); }
+}
+function setPill() {
+  const p = document.getElementById("save-pill");
+  const map = { idle: ["Loading…", ""], pending: ["Unsaved", "warn"], saving: ["Saving…", "warn"], saved: ["Saved", "ok"], error: [state.error || "Not saved", "warn"], offline: ["Not saving: open this page on claude.ai", "warn"], empty: ["No layout yet", "warn"] };
+  const [t, c] = map[state.saving] || map.idle;
+  p.textContent = t; p.className = "pill " + c;
+  const ch = changeSummary();
+  const cp = document.getElementById("change-pill");
+  cp.hidden = !state.flashed;
+  cp.textContent = ch.length ? ch.length + (ch.length === 1 ? " change" : " changes") + " since the last flash" : "Matches the keyboard";
+  cp.className = "pill " + (ch.length ? "chg" : "ok");
+  const list = document.getElementById("change-list");
+  list.replaceChildren(...ch.slice(0, 12).map(t => { const li = document.createElement("li"); li.textContent = t; return li; }));
+  if (ch.length > 12) { const li = document.createElement("li"); li.textContent = "…and " + (ch.length - 12) + " more"; list.append(li); }
+}
+
+// ---------- Rendering: tabs ----------
+function renderTabs() {
+  const tabs = document.getElementById("tabs"); tabs.replaceChildren();
+  state.doc.layers.forEach((L, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = L.name;
+    b.setAttribute("aria-pressed", i === state.layer ? "true" : "false");
+    const dirty = L.keys.some((_, p) => changedKey(i, p)) || L.enc.some((_, e) => changedEnc(i, e)) || (state.flashed && !state.flashed.layers.find(x => x.id === L.id));
+    if (dirty) { const d = document.createElement("i"); d.className = "dot"; d.title = "Changed since the last flash"; b.append(d); }
+    b.onclick = () => { state.layer = i; state.sel = null; render(); };
+    tabs.append(b);
+  });
+  if (state.doc.layers.length < 10) {
+    const add = document.createElement("button"); add.type = "button"; add.className = "add"; add.textContent = "+ Add layer";
+    add.onclick = () => edit(d => {
+      let n = 1; while (d.layers.find(l => l.id === "layer" + n)) n++;
+      d.layers.push({ id: "layer" + n, name: "Layer " + (d.layers.length), keys: Array(40).fill({ t: "trans" }), enc: ["inherit", "inherit", "inherit", "inherit"].map(p => ({ preset: p, reverse: false })) });
+      state.layer = d.layers.length - 1; state.sel = null;
+    });
+    tabs.append(add);
+  }
+  const tools = document.getElementById("layer-tools"); tools.replaceChildren();
+  const L = state.doc.layers[state.layer];
+  const reach = whoReaches(L.id);
+  const info = document.createElement("span"); info.style.color = "var(--muted)";
+  info.textContent = state.layer === 0 ? "The Base layer is always on." : reach.length ? "Reached by: " + reach.join("; ") + "." : "Nothing reaches this layer yet. Give a key a “Layer” or “Tap & hold” action that points here.";
+  tools.append(info);
+  const ren = document.createElement("button"); ren.type = "button"; ren.textContent = "Rename";
+  ren.onclick = () => {
+    const field = document.createElement("input"); field.type = "text"; field.id = "rename-field"; field.value = L.name; field.maxLength = 12; field.setAttribute("aria-label", "Layer name");
+    const ok = document.createElement("button"); ok.type = "button"; ok.textContent = "Save name";
+    ok.onclick = () => { const v = field.value.trim(); if (v) edit(d => { d.layers[state.layer].name = v; }); };
+    field.onkeydown = e => { if (e.key === "Enter") ok.click(); if (e.key === "Escape") render(); };
+    const hint = document.createElement("span"); hint.style.color = "var(--muted)"; hint.textContent = "Up to 8 letters fit large on the screen.";
+    tools.replaceChildren(field, ok, hint); field.focus(); field.select();
+  };
+  tools.append(ren);
+  if (state.layer > 0) {
+    const del = document.createElement("button"); del.type = "button"; del.className = "danger"; del.textContent = "Delete layer";
+    del.onclick = () => {
+      const sure = document.createElement("button"); sure.type = "button"; sure.className = "danger"; sure.textContent = "Yes, delete " + L.name;
+      const no = document.createElement("button"); no.type = "button"; no.textContent = "Keep it";
+      const msg = document.createElement("span"); msg.textContent = reach.length ? "Keys that open this layer will be set to “Nothing”." : "";
+      sure.onclick = () => edit(d => {
+        const id = d.layers[state.layer].id;
+        d.layers.splice(state.layer, 1);
+        d.layers.forEach(l => l.keys = l.keys.map(b => (b.t === "layer" && b.layer === id) ? { t: "none" } : (b.t === "hold" && b.hold.layer === id) ? { t: "key", key: b.tap.key, mods: b.tap.mods } : b));
+        state.layer = 0; state.sel = null;
+      });
+      no.onclick = () => render();
+      tools.replaceChildren(sure, no, msg);
+    };
+    tools.append(del);
+  }
+}
+function whoReaches(id) {
+  const out = [];
+  state.doc.layers.forEach(L => L.keys.forEach((b, p) => {
+    if ((b.t === "layer" && b.layer === id) || (b.t === "hold" && b.hold.layer === id)) out.push((b.t === "hold" ? "holding " + label(b).tap : label(b).hold + " " + label(b).tap) + " (" + POS_NAME(p).toLowerCase() + (L.id === state.doc.layers[0].id ? "" : ", on " + L.name) + ")");
+  }));
+  return out;
+}
+
+// ---------- Rendering: board ----------
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, text) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; }
+function fit(t) { const n = [...t].length; return n <= 2 ? 18 : n <= 5 ? 14 : n <= 8 ? 11.5 : 9.5; }
+function renderBoard() {
+  const svg = document.getElementById("board");
+  const pad = 8;
+  svg.setAttribute("viewBox", `0 0 ${BOARD_W * U + pad * 2} ${BOARD_H * U + pad * 2}`);
+  svg.replaceChildren();
+  const L = state.doc.layers[state.layer];
+  GEO.forEach(([cx, cy, r, kind], i) => {
+    const x = cx * U + pad, y = cy * U + pad, s = U - 6;
+    const b = L.keys[i]; const lb = label(b);
+    const sel = state.sel === i; const changed = changedKey(state.layer, i) || (ENC_POS.includes(i) && changedEnc(state.layer, ENC_POS.indexOf(i)));
+    const g = el("g", { class: "k", transform: `rotate(${r} ${x} ${y})`, tabindex: "0", role: "button", "aria-label": POS_NAME(i) + ": " + (describe(b) || lb.tap) });
+    const fill = sel ? "var(--sel)" : lb.trans ? "var(--cap-dim)" : "var(--cap)";
+    const stroke = changed ? "var(--changed)" : sel ? "var(--sel)" : "var(--cap-edge)";
+    const sw = changed ? 2.5 : 1.5;
+    if (kind === "d") {
+      g.append(el("circle", { class: "face", cx: x, cy: y, r: s / 2, fill, stroke, "stroke-width": sw }));
+      g.append(el("circle", { cx: x, cy: y, r: s / 2 - 6, fill: "none", stroke: sel ? "var(--sel-ink)" : "var(--cap-edge)", "stroke-dasharray": "2 4", "stroke-opacity": 0.7 }));
+    } else if (kind === "r") {
+      g.append(el("rect", { class: "face", x: x - s * 0.4, y: y - s / 2, width: s * 0.8, height: s, rx: 9, fill, stroke, "stroke-width": sw }));
+      for (let k = 0; k < 7; k++) g.append(el("line", { x1: x - s * 0.4 + 6 + k * (s * 0.8 - 12) / 6, x2: x - s * 0.4 + 6 + k * (s * 0.8 - 12) / 6, y1: y - s / 2 + 5, y2: y + s / 2 - 5, stroke: sel ? "var(--sel-ink)" : "var(--cap-edge)", "stroke-opacity": 0.5 }));
+    } else {
+      g.append(el("rect", { class: "face", x: x - s / 2, y: y - s / 2, width: s, height: s, rx: 8, fill, stroke, "stroke-width": sw }));
+    }
+    const ink = sel ? "var(--sel-ink)" : lb.trans ? "var(--muted)" : "var(--ink)";
+    const tap = lb.trans ? "▽" : lb.tap;
+    const fs = fit(tap);
+    const words = tap.length > 8 && tap.includes(" ") ? [tap.slice(0, tap.indexOf(" ")), tap.slice(tap.indexOf(" ") + 1)] : [tap];
+    words.forEach((w, j) => g.append(el("text", { x, y: y - (lb.hold ? 6 : 0) + (j - (words.length - 1) / 2) * fs * 1.05, "text-anchor": "middle", "dominant-baseline": "central", "font-family": "var(--display)", "font-weight": 700, "font-size": Math.min(fs, kind === "k" ? 99 : 10.5), fill: ink, "paint-order": "stroke", stroke: kind === "k" ? "none" : fill, "stroke-width": 3 }, w)));
+    if (lb.hold) g.append(el("text", { x, y: y + 14, "text-anchor": "middle", "dominant-baseline": "central", "font-family": "var(--mono)", "font-weight": 600, "font-size": 9.5, fill: sel ? "var(--sel-ink)" : "var(--bill)" }, lb.hold));
+    if (kind !== "k") {
+      const enc = L.enc[ENC_POS.indexOf(i)];
+      const t = enc.preset === "inherit" ? "turn: as Base" : "turn: " + ENC_LABEL[enc.preset].split(" ")[0].toLowerCase();
+      g.append(el("text", { x, y: y + s / 2 + 9, "text-anchor": "middle", "font-family": "var(--mono)", "font-size": 8.5, fill: "var(--muted)" }, t));
+    }
+    g.append(el("title", {}, POS_NAME(i) + (describe(b) ? ": " + describe(b) : "")));
+    const pick = () => { state.sel = i; render(); document.getElementById("editor").scrollIntoView({ block: "nearest", behavior: "smooth" }); };
+    g.addEventListener("click", pick);
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+    svg.append(g);
+  });
+  svg.append(el("text", { x: pad + 2.75 * U, y: BOARD_H * U + pad + 4, "text-anchor": "middle", "font-family": "var(--mono)", "font-size": 11, fill: "var(--muted)", "letter-spacing": "0.1em" }, "LEFT"));
+  svg.append(el("text", { x: pad + 13.344 * U, y: BOARD_H * U + pad + 4, "text-anchor": "middle", "font-family": "var(--mono)", "font-size": 11, fill: "var(--muted)", "letter-spacing": "0.1em" }, "RIGHT"));
+}
+
+// ---------- Rendering: editor ----------
+const KINDS = [
+  ["key", "Type a key"], ["shortcut", "Mac shortcut"], ["hold", "Tap & hold"], ["layer", "Layer"], ["mod", "Modifier"],
+  ["media", "Media & screen"], ["system", "Bluetooth & keyboard"], ["mouse", "Mouse"], ["trans", "Same as layer below"], ["none", "Nothing"],
+];
+function kindOf(b) {
+  if (b.t === "key") {
+    if (SHORTCUTS.some(s => s[1] === b.key && sameMods(s[2], b.mods)) && (b.mods || []).length) return "shortcut";
+    if (KEY_BY[b.key] && KEY_BY[b.key].group === "Media & screen" && !(b.mods || []).length) return "media";
+    return "key";
+  }
+  return { hold: "hold", layer: "layer", mod: "mod", bt: "system", sys: "system", mouse: "mouse", trans: "trans", none: "none" }[b.t] || "key";
+}
+const EXPLAIN = {
+  key: "Types one key. Tick modifiers to make it a shortcut, like Cmd+K.",
+  shortcut: "A Mac shortcut on a single key.",
+  hold: "Does one thing when tapped and another when held: a layer (like holding Space for arrows) or a modifier (like home-row Cmd). On the home row it uses the calmer home-row timing.",
+  layer: "Switches to another layer: while held, until you switch back, as an on/off toggle, or for just the next key.",
+  mod: "Cmd, Opt, Ctrl or Shift on its own. Sticky means you tap it and it applies to the next key, so you don't have to hold it.",
+  media: "Volume, playback and screen brightness.",
+  system: "Bluetooth devices, switching between USB and Bluetooth, flashing mode, restart, Caps Word (capitals until the end of the word) and Repeat (types the last key again).",
+  mouse: "Mouse clicks.",
+  trans: "Passes through to the layer below, usually Base. Handy on layers where you only want to change a few keys.",
+  none: "Does nothing at all, and stops the layer below from showing through.",
+};
+function btn(text, pressed, onclick, extra) { const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-pressed", pressed ? "true" : "false"); if (extra) { b.textContent = ""; b.append(text); const s = document.createElement("small"); s.textContent = extra; b.append(s); } else b.textContent = text; b.onclick = onclick; return b; }
+function setKey(b) { const i = state.sel; edit(d => { d.layers[state.layer].keys[i] = b; }); }
+
+function keySelect(id, value, onchange) {
+  const s = document.createElement("select"); s.id = id;
+  let grp = null, og = null;
+  KEYS.forEach(k => { if (k.group !== grp) { grp = k.group; og = document.createElement("optgroup"); og.label = grp; s.append(og); } const o = document.createElement("option"); o.value = k.code; o.textContent = k.label + (k.label.length <= 2 ? "" : ""); if (k.code === value) o.selected = true; og.append(o); });
+  s.onchange = () => onchange(s.value);
+  return s;
+}
+function layerSelect(id, value, onchange) {
+  const s = document.createElement("select"); s.id = id;
+  state.doc.layers.forEach((L, i) => { if (i === 0) return; const o = document.createElement("option"); o.value = L.id; o.textContent = L.name; if (L.id === value) o.selected = true; s.append(o); });
+  s.onchange = () => onchange(s.value);
+  return s;
+}
+function modsChecks(mods, onchange, idp) {
+  const wrap = document.createElement("div"); wrap.className = "mods";
+  MODS.forEach(([m, name, sym]) => {
+    const lab = document.createElement("label"); const c = document.createElement("input"); c.type = "checkbox"; c.id = idp + m; c.checked = (mods || []).includes(m);
+    c.onchange = () => onchange(MODS.map(x => x[0]).filter(x => document.getElementById(idp + x).checked));
+    lab.append(c, document.createTextNode(sym + " " + name)); wrap.append(lab);
+  });
+  return wrap;
+}
+function firstLayerId() { return (state.doc.layers[1] || state.doc.layers[0]).id; }
+
+function renderEditor() {
+  const ed = document.getElementById("editor");
+  if (state.sel == null) { ed.replaceChildren(); const p = document.createElement("p"); p.className = "empty"; p.textContent = "Pick a key, roller or dial on the keyboard to change it."; ed.append(p); return; }
+  const i = state.sel, L = state.doc.layers[state.layer], b = L.keys[i], kind = kindOf(b);
+  const isEnc = ENC_POS.includes(i);
+  ed.replaceChildren();
+
+  const left = document.createElement("section");
+  const title = document.createElement("div"); title.className = "ed-title";
+  const h = document.createElement("h2"); h.textContent = POS_NAME(i) + (isEnc ? " press" : "");
+  const sm = document.createElement("small"); sm.textContent = L.name + " layer";
+  title.append(h, sm); left.append(title);
+  const now = document.createElement("p"); now.textContent = describe(b) || ("Now: " + label(b).tap); left.append(now);
+  const kinds = document.createElement("div"); kinds.className = "choices"; kinds.setAttribute("role", "group"); kinds.setAttribute("aria-label", "What this key does");
+  KINDS.forEach(([k, name]) => kinds.append(btn(name, k === kind, () => setKey(defaultFor(k, b)))));
+  left.append(kinds);
+  const ex = document.createElement("p"); ex.className = "explain"; ex.textContent = EXPLAIN[kind]; left.append(ex);
+
+  const right = document.createElement("section");
+  right.append(detailFor(kind, b));
+  if (isEnc) right.append(encEditor(ENC_POS.indexOf(i)));
+  ed.append(left, right);
+}
+function defaultFor(k, b) {
+  const tap = b.t === "key" ? { key: b.key, mods: b.mods || [] } : b.t === "hold" ? b.tap : { key: "A", mods: [] };
+  switch (k) {
+    case "key": return { t: "key", key: tap.key, mods: [] };
+    case "shortcut": return { t: "key", key: "C", mods: ["cmd"] };
+    case "hold": return { t: "hold", tap, hold: HOME_ROW.includes(state.sel) ? { mod: "cmd" } : { layer: firstLayerId() } };
+    case "layer": return { t: "layer", how: "hold", layer: firstLayerId() };
+    case "mod": return { t: "mod", mod: "cmd", sticky: false };
+    case "media": return { t: "key", key: "C_VOL_UP", mods: [] };
+    case "system": return { t: "bt", action: "sel", n: 0 };
+    case "mouse": return { t: "mouse", button: "left" };
+    case "trans": return { t: "trans" };
+    case "none": return { t: "none" };
+  }
+}
+function detailFor(kind, b) {
+  const box = document.createElement("div"); box.style.display = "flex"; box.style.flexDirection = "column"; box.style.gap = "12px";
+  if (kind === "key") {
+    const row = document.createElement("div"); row.className = "row";
+    const q = document.createElement("input"); q.type = "search"; q.id = "key-search"; q.placeholder = "Search keys (e.g. bracket, F5, page)"; q.setAttribute("aria-label", "Search keys");
+    row.append(q); box.append(row);
+    const grid = document.createElement("div"); grid.className = "grid";
+    const fill = () => {
+      grid.replaceChildren(); const term = q.value.trim().toLowerCase(); let grp = null;
+      KEYS.filter(k => k.group !== "Media & screen" && (!term || k.words.toLowerCase().includes(term))).forEach(k => {
+        if (k.group !== grp) { grp = k.group; const g = document.createElement("div"); g.className = "grp"; g.textContent = grp; grid.append(g); }
+        grid.append(btn(k.label, k.code === b.key, () => setKey({ t: "key", key: k.code, mods: b.mods || [] })));
+      });
+    };
+    q.oninput = fill; fill(); box.append(grid);
+    const ml = document.createElement("p"); ml.className = "explain"; ml.textContent = "Hold these together with the key:"; box.append(ml);
+    box.append(modsChecks(b.mods, m => setKey({ t: "key", key: b.key, mods: m }), "km-"));
+  } else if (kind === "shortcut") {
+    const grid = document.createElement("div"); grid.className = "presets";
+    SHORTCUTS.forEach(([name, key, mods]) => grid.append(btn(name, b.key === key && sameMods(b.mods, mods), () => setKey({ t: "key", key, mods }), mods.map(m => MOD_SYM[m]).join("") + keyLabel(key))));
+    box.append(grid);
+  } else if (kind === "hold") {
+    const r1 = document.createElement("div"); r1.className = "row";
+    const l1 = document.createElement("label"); l1.htmlFor = "tap-key"; l1.textContent = "Tap types";
+    r1.append(l1, keySelect("tap-key", b.tap.key, v => setKey({ ...b, tap: { key: v, mods: b.tap.mods || [] } })));
+    box.append(r1);
+    const r2 = document.createElement("div"); r2.className = "row";
+    const l2 = document.createElement("label"); l2.textContent = "Hold for";
+    const hc = document.createElement("div"); hc.className = "choices";
+    hc.append(btn("a layer", !!b.hold.layer, () => setKey({ ...b, hold: { layer: firstLayerId() } })), btn("a modifier", !!b.hold.mod, () => setKey({ ...b, hold: { mod: "cmd" } })));
+    r2.append(l2, hc);
+    box.append(r2);
+    const r3 = document.createElement("div"); r3.className = "row";
+    if (b.hold.layer) {
+      if (state.doc.layers.length < 2) { const p = document.createElement("p"); p.className = "explain"; p.textContent = "Add a layer first."; r3.append(p); }
+      else r3.append(layerSelect("hold-layer", b.hold.layer, v => setKey({ ...b, hold: { layer: v } })));
+    } else {
+      const c = document.createElement("div"); c.className = "choices";
+      MODS.forEach(([m, name, sym]) => c.append(btn(sym + " " + name, b.hold.mod === m, () => setKey({ ...b, hold: { mod: m } }))));
+      r3.append(c);
+    }
+    box.append(r3);
+    if (b.hold.mod && !HOME_ROW.includes(state.sel)) { const p = document.createElement("p"); p.className = "explain"; p.textContent = "Off the home row this uses standard timing: hold a little longer than a normal key press."; box.append(p); }
+  } else if (kind === "layer") {
+    const r = document.createElement("div"); r.className = "row";
+    if (state.doc.layers.length < 2) { const p = document.createElement("p"); p.className = "explain"; p.textContent = "Add a layer first."; r.append(p); }
+    else r.append(layerSelect("layer-target", b.layer, v => setKey({ ...b, layer: v })));
+    box.append(r);
+    const c = document.createElement("div"); c.className = "choices";
+    [["hold", "While held"], ["switch", "Switch to it"], ["toggle", "Toggle on/off"], ["once", "Next key only"]].forEach(([how, name]) => c.append(btn(name, b.how === how, () => setKey({ ...b, how }))));
+    box.append(c);
+    if (b.how === "switch") { const p = document.createElement("p"); p.className = "explain"; p.textContent = "Make sure that layer has a key that switches back to Base, or you'll be stuck there until the keyboard restarts."; box.append(p); }
+  } else if (kind === "mod") {
+    const c = document.createElement("div"); c.className = "choices";
+    MODS.forEach(([m, name, sym]) => c.append(btn(sym + " " + name, b.mod === m, () => setKey({ ...b, mod: m }))));
+    box.append(c);
+    const lab = document.createElement("label"); lab.className = "mods"; const cb = document.createElement("input"); cb.type = "checkbox"; cb.id = "sticky"; cb.checked = !!b.sticky;
+    cb.onchange = () => setKey({ ...b, sticky: cb.checked }); const wrap = document.createElement("span"); wrap.className = "mods"; const l = document.createElement("label"); l.append(cb, document.createTextNode(" Sticky (tap, then it applies to the next key)")); wrap.append(l); box.append(wrap);
+  } else if (kind === "media") {
+    const grid = document.createElement("div"); grid.className = "presets";
+    KEYS.filter(k => k.group === "Media & screen").forEach(k => grid.append(btn(k.label, b.key === k.code, () => setKey({ t: "key", key: k.code, mods: [] }))));
+    box.append(grid);
+  } else if (kind === "system") {
+    const grid = document.createElement("div"); grid.className = "presets";
+    for (let n = 0; n < 5; n++) grid.append(btn("Bluetooth device " + (n + 1), b.t === "bt" && b.action === "sel" && b.n === n, () => setKey({ t: "bt", action: "sel", n })));
+    [["next", "Next BT device"], ["prev", "Previous BT device"], ["clr", "Forget this BT device"]].forEach(([a, name]) => grid.append(btn(name, b.t === "bt" && b.action === a, () => setKey({ t: "bt", action: a }))));
+    [["usbbt", "Switch USB / Bluetooth"], ["capsword", "Caps Word"], ["repeat", "Repeat last key"], ["bootloader", "Flashing mode (BOOT)"], ["reset", "Restart keyboard"], ["studio", "Studio unlock"]].forEach(([a, name]) => grid.append(btn(name, b.t === "sys" && b.action === a, () => setKey({ t: "sys", action: a }))));
+    box.append(grid);
+    if (b.t === "sys" && b.action === "bootloader") { const p = document.createElement("p"); p.className = "explain"; p.textContent = "BOOT puts the half the key is on into flashing mode, so keep one on each half."; box.append(p); }
+  } else if (kind === "mouse") {
+    const c = document.createElement("div"); c.className = "choices";
+    [["left", "Click"], ["right", "Right click"], ["middle", "Middle click"]].forEach(([bt, name]) => c.append(btn(name, b.button === bt, () => setKey({ t: "mouse", button: bt }))));
+    box.append(c);
+  }
+  return box;
+}
+function encEditor(e) {
+  const L = state.doc.layers[state.layer], enc = L.enc[e];
+  const box = document.createElement("div"); box.style.display = "flex"; box.style.flexDirection = "column"; box.style.gap = "10px"; box.style.borderTop = "1px solid var(--rule)"; box.style.paddingTop = "12px";
+  const h = document.createElement("h3"); h.textContent = ENC_NAMES[e] + " turn"; box.append(h);
+  const p = document.createElement("p"); p.className = "explain"; p.textContent = "Pick what turning it does. If it goes the wrong way once it's on the keyboard, tick Reverse direction."; box.append(p);
+  const grid = document.createElement("div"); grid.className = "presets";
+  ENC_PRESETS.forEach(([id, name]) => { if (id === "inherit" && state.layer === 0) return; grid.append(btn(name, enc.preset === id, () => edit(d => { d.layers[state.layer].enc[e] = { preset: id, reverse: id === "inherit" ? false : enc.reverse }; }))); });
+  box.append(grid);
+  if (enc.preset !== "inherit" && enc.preset !== "none") {
+    const wrap = document.createElement("span"); wrap.className = "mods"; const l = document.createElement("label"); const cb = document.createElement("input"); cb.type = "checkbox"; cb.id = "enc-rev"; cb.checked = !!enc.reverse;
+    cb.onchange = () => edit(d => { d.layers[state.layer].enc[e] = { ...enc, reverse: cb.checked }; });
+    l.append(cb, document.createTextNode(" Reverse direction")); wrap.append(l); box.append(wrap);
+  }
+  return box;
+}
+
+// ---------- Glossary ----------
+const GLOSSARY = [
+  ["Type a key", "Key Press", "Sends one key, optionally with modifiers (a shortcut)."],
+  ["Tap & hold → modifier", "Mod-Tap · Home Row Mod (left/right)", "Tap for a key, hold for Cmd/Opt/Ctrl/Shift. The home-row versions use calmer timing so fast typing doesn't trigger modifiers by accident."],
+  ["Tap & hold → layer", "Layer-Tap", "Tap for a key, hold for a layer (Space holds Nav)."],
+  ["Layer: while held", "Momentary Layer", "The layer is on only while you hold the key."],
+  ["Layer: switch to it", "To Layer", "Switches to the layer and stays until another key switches away."],
+  ["Layer: toggle on/off", "Toggle Layer", "Press once to turn the layer on, again to turn it off."],
+  ["Layer: next key only", "Sticky Layer", "Turns the layer on for the very next key, then turns it off."],
+  ["Modifier (sticky)", "Sticky Key", "Tap Shift, then the next key is shifted, with no holding needed."],
+  ["Caps Word", "Caps Word", "Types capitals until you finish the word (space or punctuation turns it off). Great for CONSTANT_NAMES."],
+  ["Repeat last key", "Key Repeat", "Types the previous key again."],
+  ["Bluetooth device / forget", "Bluetooth", "Pick which of up to five paired devices gets your typing, or forget the current one to pair again."],
+  ["Switch USB / Bluetooth", "Output Selection", "Chooses whether keystrokes go over the cable or over Bluetooth."],
+  ["Flashing mode (BOOT)", "Bootloader", "Puts that half into flashing mode so new firmware can be copied on."],
+  ["Restart keyboard", "Reset", "Restarts the keyboard (nothing is erased)."],
+  ["Studio unlock", "Studio Unlock", "Lets ZMK Studio make changes."],
+  ["Mouse click", "Mouse Key Press", "Left, right or middle mouse button."],
+  ["Same as layer below", "Transparent", "Passes the key through to the layer underneath."],
+  ["Nothing", "None", "Does nothing and blocks the layer below."],
+  ["Roller and dial turns", "scroll_encoder, tab_encoder, word_encoder, zoom_encoder, horizontal_scroll_encoder, enc_key_press", "What turning a roller or dial does. Studio lists them as if they were keys, but they only work on rollers and dials, and Studio can't assign them. Set them here instead."],
+  ["(not offered)", "Grave/Escape", "Esc, or ` when Shift or Cmd is held. Rarely needed with a dedicated Esc."],
+  ["(not offered)", "Key Toggle", "Holds a key down until you press it again."],
+  ["(not offered)", "External Power", "Cuts power to the screens to save battery. Not wired on every board, so it's left out."],
+  ["(not offered)", "mouse_move, mouse_scroll", "Moving the pointer and scrolling with keys. Scrolling lives on the left roller."],
+];
+function renderGlossary() {
+  const dl = document.getElementById("glossary"); dl.replaceChildren();
+  GLOSSARY.forEach(([here, studio, what]) => { const dt = document.createElement("dt"); dt.textContent = studio; const dd = document.createElement("dd"); dd.textContent = (here.startsWith("(") ? "" : "Here: " + here + ". ") + what; dl.append(dt, dd); });
+}
+
+// ---------- Boot ----------
+function render() {
+  if (!state.doc) return;
+  if (state.layer >= state.doc.layers.length) state.layer = 0;
+  renderTabs(); renderBoard(); renderEditor(); setPill();
+}
+renderGlossary();
+(async () => {
+  let db = null;
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) { db = null; }
+  if (!db) {
+    state.saving = "offline"; setPill();
+    document.getElementById("editor").replaceChildren(Object.assign(document.createElement("p"), { className: "empty", textContent: "This page loads and saves your layout through claude.ai. Open it there to edit." }));
+    return;
+  }
+  state.db = db;
+  db.doc("keymap/flashed").onSnapshot(s => { state.flashed = s.exists ? s.data() : null; if (state.doc) render(); });
+  db.doc("keymap/current").onSnapshot(s => {
+    if (!s.exists) { state.saving = "empty"; setPill(); document.getElementById("editor").replaceChildren(Object.assign(document.createElement("p"), { className: "empty", textContent: "No layout saved yet. Ask Claude to load your current keymap into this page." })); return; }
+    if (s.metadata.hasPendingWrites || writing || state.saving === "pending") return;
+    state.doc = JSON.parse(JSON.stringify(s.data()));
+    if (state.saving !== "error") state.saving = "saved";
+    render();
+  }, () => { state.saving = "error"; state.error = "Lost the connection. Reload the page."; setPill(); });
+})();
+</script>

@@ -1,0 +1,1094 @@
+{
+ "layers": [
+  {
+   "enc": [
+    {
+     "preset": "scroll_v",
+     "reverse": false
+    },
+    {
+     "preset": "volume",
+     "reverse": false
+    },
+    {
+     "preset": "tabs",
+     "reverse": false
+    },
+    {
+     "preset": "arrows_lr",
+     "reverse": false
+    }
+   ],
+   "id": "base",
+   "keys": [
+    {
+     "key": "Q",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "W",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "E",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "R",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "T",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "Y",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "U",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "I",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "O",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "P",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "hold": {
+      "mod": "ctrl"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "A",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "mod": "opt"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "S",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "mod": "cmd"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "D",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "mod": "shift"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "F",
+      "mods": []
+     }
+    },
+    {
+     "key": "G",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "H",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "hold": {
+      "mod": "shift"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "J",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "mod": "cmd"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "K",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "mod": "opt"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "L",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "mod": "ctrl"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "SQT",
+      "mods": []
+     }
+    },
+    {
+     "key": "Z",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "X",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "V",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "B",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "M",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "COMMA",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "DOT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "FSLH",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "UP",
+     "mods": [
+      "ctrl"
+     ],
+     "t": "key"
+    },
+    {
+     "hold": {
+      "layer": "fn"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "ESC",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "layer": "nav"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "SPACE",
+      "mods": []
+     }
+    },
+    {
+     "key": "TAB",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C_MUTE",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C_PP",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "hold": {
+      "layer": "sym"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "RET",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "layer": "num"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "BSPC",
+      "mods": []
+     }
+    },
+    {
+     "hold": {
+      "layer": "fn"
+     },
+     "t": "hold",
+     "tap": {
+      "key": "DEL",
+      "mods": []
+     }
+    },
+    {
+     "key": "SPACE",
+     "mods": [
+      "cmd"
+     ],
+     "t": "key"
+    }
+   ],
+   "name": "Base"
+  },
+  {
+   "enc": [
+    {
+     "preset": "scroll_h",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "words",
+     "reverse": false
+    }
+   ],
+   "id": "nav",
+   "keys": [
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "key": "LEFT",
+     "mods": [
+      "cmd"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "PG_DN",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "PG_UP",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "RIGHT",
+     "mods": [
+      "cmd"
+     ],
+     "t": "key"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "mod": "ctrl",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "opt",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "cmd",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "shift",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "key": "LEFT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "DOWN",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "UP",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "RIGHT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "action": "capsword",
+     "t": "sys"
+    },
+    {
+     "key": "Z",
+     "mods": [
+      "cmd"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "X",
+     "mods": [
+      "cmd"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "C",
+     "mods": [
+      "cmd"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "V",
+     "mods": [
+      "cmd"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "Z",
+     "mods": [
+      "cmd",
+      "shift"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "LEFT",
+     "mods": [
+      "opt"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "TAB",
+     "mods": [
+      "ctrl",
+      "shift"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "TAB",
+     "mods": [
+      "ctrl"
+     ],
+     "t": "key"
+    },
+    {
+     "key": "RIGHT",
+     "mods": [
+      "opt"
+     ],
+     "t": "key"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "key": "RET",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "BSPC",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "DEL",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "trans"
+    }
+   ],
+   "name": "Nav"
+  },
+  {
+   "enc": [
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    }
+   ],
+   "id": "num",
+   "keys": [
+    {
+     "key": "LBKT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N7",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N8",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N9",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "RBKT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "key": "SEMI",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N4",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N5",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N6",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "EQUAL",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "mod": "shift",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "cmd",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "opt",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "ctrl",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "key": "GRAVE",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N1",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N2",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N3",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "BSLH",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "key": "DOT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N0",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "MINUS",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    }
+   ],
+   "name": "Num"
+  },
+  {
+   "enc": [
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    }
+   ],
+   "id": "sym",
+   "keys": [
+    {
+     "key": "LBRC",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "AMPS",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "STAR",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "LPAR",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "RBRC",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "key": "COLON",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "DLLR",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "PRCNT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "CARET",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "PLUS",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "mod": "shift",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "cmd",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "opt",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "mod": "ctrl",
+     "sticky": false,
+     "t": "mod"
+    },
+    {
+     "key": "TILDE",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "EXCL",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "AT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "HASH",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "PIPE",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "key": "LPAR",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "RPAR",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "UNDER",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    }
+   ],
+   "name": "Sym"
+  },
+  {
+   "enc": [
+    {
+     "preset": "inherit",
+     "reverse": false
+    },
+    {
+     "preset": "brightness",
+     "reverse": false
+    },
+    {
+     "preset": "zoom",
+     "reverse": false
+    },
+    {
+     "preset": "inherit",
+     "reverse": false
+    }
+   ],
+   "id": "fn",
+   "keys": [
+    {
+     "key": "F12",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F7",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F8",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F9",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "N4",
+     "mods": [
+      "cmd",
+      "shift"
+     ],
+     "t": "key"
+    },
+    {
+     "action": "sel",
+     "n": 0,
+     "t": "bt"
+    },
+    {
+     "action": "sel",
+     "n": 1,
+     "t": "bt"
+    },
+    {
+     "action": "sel",
+     "n": 2,
+     "t": "bt"
+    },
+    {
+     "action": "sel",
+     "n": 3,
+     "t": "bt"
+    },
+    {
+     "action": "clr",
+     "t": "bt"
+    },
+    {
+     "key": "F11",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F4",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F5",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F6",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "action": "studio",
+     "t": "sys"
+    },
+    {
+     "key": "C_PREV",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C_VOL_DN",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C_VOL_UP",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C_NEXT",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C_PP",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F10",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F1",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F2",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "F3",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "action": "bootloader",
+     "t": "sys"
+    },
+    {
+     "key": "C_MUTE",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C_BRI_DN",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "key": "C_BRI_UP",
+     "mods": [],
+     "t": "key"
+    },
+    {
+     "action": "usbbt",
+     "t": "sys"
+    },
+    {
+     "action": "bootloader",
+     "t": "sys"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "none"
+    },
+    {
+     "t": "trans"
+    },
+    {
+     "t": "trans"
+    }
+   ],
+   "name": "Fn"
+  }
+ ],
+ "updatedAt": "2026-10-21T02:00:00Z",
+ "version": 1
+}

@@ -4,8 +4,11 @@
  * The upstream shield only defines a matrix transform, so we add a physical
  * layout here and point the chosen node at it. (The old matrix-transform
  * chosen entry is removed in waterfowl.keymap, the only file ZMK loads after
- * the shield's own files.) Key positions come from
- * QMK's keyboards/waterfowl/keyboard.json (units are 1/100 of a key).
+ * the shield's own files.) Positions and thumb angles come from the
+ * designer's switch plate drawing (JW2586/waterfowl-keyboard-info, right
+ * half, mirrored for the left); the dials aren't on the plate, so they sit
+ * where QMK's layout puts them. Units are 1/100 of a key (19.05 mm);
+ * rotations are 1/100 degree, clockwise, around the key's centre.
  * Order must match the 40 bindings per layer in waterfowl.keymap.
  *
  * Included from waterfowl_left.overlay and waterfowl_right.overlay; ZMK only
@@ -25,46 +28,46 @@
         transform = <&default_transform>;
         kscan = <&kscan0>;
         keys
-            = <&key_physical_attrs 100 100     0   100 0 0 0>  //  0 Q
-            , <&key_physical_attrs 100 100   100    25 0 0 0>  //  1 W
-            , <&key_physical_attrs 100 100   200     0 0 0 0>  //  2 E
-            , <&key_physical_attrs 100 100   300    38 0 0 0>  //  3 R
-            , <&key_physical_attrs 100 100   400    50 0 0 0>  //  4 T
-            , <&key_physical_attrs 100 100   900    50 0 0 0>  //  5 Y
-            , <&key_physical_attrs 100 100  1000    38 0 0 0>  //  6 U
-            , <&key_physical_attrs 100 100  1100     0 0 0 0>  //  7 I
-            , <&key_physical_attrs 100 100  1200    25 0 0 0>  //  8 O
-            , <&key_physical_attrs 100 100  1300   100 0 0 0>  //  9 P
-            , <&key_physical_attrs 100 100     0   200 0 0 0>  // 10 A
-            , <&key_physical_attrs 100 100   100   125 0 0 0>  // 11 S
-            , <&key_physical_attrs 100 100   200   100 0 0 0>  // 12 D
-            , <&key_physical_attrs 100 100   300   138 0 0 0>  // 13 F
-            , <&key_physical_attrs 100 100   400   150 0 0 0>  // 14 G
-            , <&key_physical_attrs 100 100   900   150 0 0 0>  // 15 H
-            , <&key_physical_attrs 100 100  1000   138 0 0 0>  // 16 J
-            , <&key_physical_attrs 100 100  1100   100 0 0 0>  // 17 K
-            , <&key_physical_attrs 100 100  1200   125 0 0 0>  // 18 L
-            , <&key_physical_attrs 100 100  1300   200 0 0 0>  // 19 ;
-            , <&key_physical_attrs 100 100     0   300 0 0 0>  // 20 Z
-            , <&key_physical_attrs 100 100   100   225 0 0 0>  // 21 X
-            , <&key_physical_attrs 100 100   200   200 0 0 0>  // 22 C
-            , <&key_physical_attrs 100 100   300   238 0 0 0>  // 23 V
-            , <&key_physical_attrs 100 100   400   250 0 0 0>  // 24 B
-            , <&key_physical_attrs 100 100   900   250 0 0 0>  // 25 N
-            , <&key_physical_attrs 100 100  1000   238 0 0 0>  // 26 M
-            , <&key_physical_attrs 100 100  1100   200 0 0 0>  // 27 ,
-            , <&key_physical_attrs 100 100  1200   225 0 0 0>  // 28 .
-            , <&key_physical_attrs 100 100  1300   300 0 0 0>  // 29 /
-            , <&key_physical_attrs 100 100   200   350 0 0 0>  // 30 L roller press
-            , <&key_physical_attrs 100 100   350   350 0 0 0>  // 31 L thumb 1
-            , <&key_physical_attrs 100 100   450   370 0 0 0>  // 32 L thumb 2
-            , <&key_physical_attrs 100 100   550   410 0 0 0>  // 33 L thumb 3
-            , <&key_physical_attrs 100 100   550   250 0 0 0>  // 34 L dial press
-            , <&key_physical_attrs 100 100   750   250 0 0 0>  // 35 R dial press
-            , <&key_physical_attrs 100 100   750   410 0 0 0>  // 36 R thumb 3
-            , <&key_physical_attrs 100 100   850   370 0 0 0>  // 37 R thumb 2
-            , <&key_physical_attrs 100 100   950   350 0 0 0>  // 38 R thumb 1
-            , <&key_physical_attrs 100 100  1100   350 0 0 0>  // 39 R roller press
+            = <&key_physical_attrs 100 100    25  124       0     0    0>  //  0 Q
+            , <&key_physical_attrs 100 100   125   50       0     0    0>  //  1 W
+            , <&key_physical_attrs 100 100   225   25       0     0    0>  //  2 E
+            , <&key_physical_attrs 100 100   325   62       0     0    0>  //  3 R
+            , <&key_physical_attrs 100 100   425   75       0     0    0>  //  4 T
+            , <&key_physical_attrs 100 100  1084   75       0     0    0>  //  5 Y
+            , <&key_physical_attrs 100 100  1184   62       0     0    0>  //  6 U
+            , <&key_physical_attrs 100 100  1284   25       0     0    0>  //  7 I
+            , <&key_physical_attrs 100 100  1384   50       0     0    0>  //  8 O
+            , <&key_physical_attrs 100 100  1484  124       0     0    0>  //  9 P
+            , <&key_physical_attrs 100 100    25  224       0     0    0>  // 10 A
+            , <&key_physical_attrs 100 100   125  150       0     0    0>  // 11 S
+            , <&key_physical_attrs 100 100   225  125       0     0    0>  // 12 D
+            , <&key_physical_attrs 100 100   325  162       0     0    0>  // 13 F
+            , <&key_physical_attrs 100 100   425  175       0     0    0>  // 14 G
+            , <&key_physical_attrs 100 100  1084  175       0     0    0>  // 15 H
+            , <&key_physical_attrs 100 100  1184  162       0     0    0>  // 16 J
+            , <&key_physical_attrs 100 100  1284  125       0     0    0>  // 17 K
+            , <&key_physical_attrs 100 100  1384  150       0     0    0>  // 18 L
+            , <&key_physical_attrs 100 100  1484  224       0     0    0>  // 19 '
+            , <&key_physical_attrs 100 100    25  324       0     0    0>  // 20 Z
+            , <&key_physical_attrs 100 100   125  250       0     0    0>  // 21 X
+            , <&key_physical_attrs 100 100   225  225       0     0    0>  // 22 C
+            , <&key_physical_attrs 100 100   325  262       0     0    0>  // 23 V
+            , <&key_physical_attrs 100 100   425  275       0     0    0>  // 24 B
+            , <&key_physical_attrs 100 100  1084  275       0     0    0>  // 25 N
+            , <&key_physical_attrs 100 100  1184  262       0     0    0>  // 26 M
+            , <&key_physical_attrs 100 100  1284  225       0     0    0>  // 27 ,
+            , <&key_physical_attrs 100 100  1384  250       0     0    0>  // 28 .
+            , <&key_physical_attrs 100 100  1484  324       0     0    0>  // 29 /
+            , <&key_physical_attrs 100 100   225  351       0     0    0>  // 30 L roller press
+            , <&key_physical_attrs 100 100   364  378    1500   414  428>  // 31 L thumb outer
+            , <&key_physical_attrs 100 100   467  420    3000   517  470>  // 32 L thumb middle
+            , <&key_physical_attrs 100 100   554  488    4500   604  538>  // 33 L thumb inner
+            , <&key_physical_attrs 100 100   575  275       0     0    0>  // 34 L dial press
+            , <&key_physical_attrs 100 100   934  275       0     0    0>  // 35 R dial press
+            , <&key_physical_attrs 100 100   955  488 (-4500)  1005  538>  // 36 R thumb inner
+            , <&key_physical_attrs 100 100  1043  420 (-3000)  1093  470>  // 37 R thumb middle
+            , <&key_physical_attrs 100 100  1145  378 (-1500)  1195  428>  // 38 R thumb outer
+            , <&key_physical_attrs 100 100  1284  351       0     0    0>  // 39 R roller press
             ;
     };
 };

@@ -6,8 +6,10 @@ The layout is a Mac-flavored take on Miryoku: home-row modifiers (Ctrl, Opt, Cmd
 
 | File | What it is |
 |---|---|
-| `config/waterfowl.keymap` | The keymap: Base, Nav, Num, Sym and Fn layers plus 3 spare layers for Studio |
-| `config/waterfowl_layout.dtsi` | The key-position map Studio uses to draw the keyboard (included by `waterfowl_left.overlay` and `waterfowl_right.overlay`) |
+| `config/keymap.json` | The layout as the keymap editor page saves it |
+| `config/waterfowl.keymap` | Generated from `keymap.json` by `tools/build_keymap.py` |
+| `docs/keymap-editor.html` | The keymap editor page |
+| `config/waterfowl_layout.dtsi` | Real key positions and thumb angles (from the designer's switch plate drawing), used by Studio and the editor |
 | `config/waterfowl.conf` | Turns on the rollers, dials and screens (both halves) |
 | `config/waterfowl_left.conf` | Left-half extras: roller scrolling, fetching the right half's battery |
 | `config/waterfowl_right.overlay` | Flips the right screen, which is mounted the other way round |
@@ -17,23 +19,15 @@ The layout is a Mac-flavored take on Miryoku: home-row modifiers (Ctrl, Opt, Cmd
 | `build.yaml` | What GitHub builds: left (with Studio), right, settings reset |
 | `firmware/` | Firmware built locally with Docker (ignored by git) |
 
-## Everyday editing: ZMK Studio
+## Changing the layout
 
-1. Plug the **left** half into the Mac with USB.
-2. Open the [ZMK Studio app](https://zmk.studio/download) or [zmk.studio](https://zmk.studio/) in Chrome or Edge, then pick "Waterfowl".
-3. Unlock it when asked: hold **Del** (right outer thumb) and tap **G**.
-4. Click a key, choose what it should do. Changes take effect right away and stay on the keyboard after unplugging. No reflashing needed.
-5. Layers: use the layer list on the left to switch between layers, rename them, or turn on one of the three spare layers.
+1. Open the [Waterfowl Keymap editor](https://claude.ai/artifact/ASKiWb19dV3EnRj4GaPEqy). It draws the board at its real key positions, with every layer, roller and dial.
+2. Click a key and pick what it does. Changes save as you go, and the page shows what's changed since the last flash.
+3. Tell Claude **"flash my keymap"**. Claude reads the saved layout into `config/keymap.json`, runs `python3 tools/build_keymap.py config/keymap.json` to regenerate `config/waterfowl.keymap`, builds, pushes and flashes. Keymap changes only need the left half.
 
-Studio can't edit these yet: combos, macros, tap-dance, hold-tap timing, and what the rollers and dials do when turned. Use Keymap Editor for those (below).
+`config/waterfowl.keymap` is generated, so don't edit it by hand. Edit the layout on the page, or in `config/keymap.json`, then rerun the script.
 
-## Bigger changes: Keymap Editor
-
-1. Open [Keymap Editor](https://nickcoutsos.github.io/keymap-editor/) and connect it to this GitHub repo.
-2. Make the change and commit. GitHub Actions builds new firmware in about 5 minutes (repo → **Actions** tab → latest run → **firmware** download).
-3. Flash `waterfowl_left-nice_nano_v2-zmk.uf2` to the left half. The keymap lives on the left half, so the right half only needs reflashing after a ZMK upgrade or when its own settings change.
-
-**Important:** once you've saved anything in Studio, the keyboard ignores the keymap file. After flashing a Keymap Editor change, open Studio and choose **Restore Stock Settings** to load it. That wipes your Studio-only edits, so make big edits in one tool at a time.
+ZMK Studio still works (unlock with **Del + G**), but anything saved there takes priority over the keymap file until you choose **Restore Stock Settings** in Studio. Prefer the editor page.
 
 ## Flashing a half
 
