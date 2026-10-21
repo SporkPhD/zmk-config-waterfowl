@@ -55,16 +55,16 @@
             , <&key_physical_attrs 100 100  1100   200 0 0 0>  // 27 ,
             , <&key_physical_attrs 100 100  1200   225 0 0 0>  // 28 .
             , <&key_physical_attrs 100 100  1300   300 0 0 0>  // 29 /
-            , <&key_physical_attrs 100 100   200   350 0 0 0>  // 30 L dial
+            , <&key_physical_attrs 100 100   200   350 0 0 0>  // 30 L roller press
             , <&key_physical_attrs 100 100   350   350 0 0 0>  // 31 L thumb 1
             , <&key_physical_attrs 100 100   450   370 0 0 0>  // 32 L thumb 2
             , <&key_physical_attrs 100 100   550   410 0 0 0>  // 33 L thumb 3
-            , <&key_physical_attrs 100 100   550   250 0 0 0>  // 34 L roller
-            , <&key_physical_attrs 100 100   750   250 0 0 0>  // 35 R roller
+            , <&key_physical_attrs 100 100   550   250 0 0 0>  // 34 L dial press
+            , <&key_physical_attrs 100 100   750   250 0 0 0>  // 35 R dial press
             , <&key_physical_attrs 100 100   750   410 0 0 0>  // 36 R thumb 3
             , <&key_physical_attrs 100 100   850   370 0 0 0>  // 37 R thumb 2
             , <&key_physical_attrs 100 100   950   350 0 0 0>  // 38 R thumb 1
-            , <&key_physical_attrs 100 100  1100   350 0 0 0>  // 39 R dial
+            , <&key_physical_attrs 100 100  1100   350 0 0 0>  // 39 R roller press
             ;
     };
 };

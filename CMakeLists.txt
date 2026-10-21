@@ -1,0 +1,6 @@
+if(CONFIG_WATERFOWL_PERIPHERAL_BONGO_CAT)
+    zephyr_library()
+    zephyr_library_include_directories(${ZEPHYR_LVGL_MODULE_DIR})
+    zephyr_library_include_directories(${CMAKE_SOURCE_DIR}/include)
+    zephyr_library_sources(src/peripheral_bongo_cat.c)
+endif()

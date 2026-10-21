@@ -154,7 +154,7 @@
           "y": 3
         },
         {
-          "label": "L dial",
+          "label": "L roller",
           "x": 2,
           "y": 3.5
         },
@@ -174,12 +174,12 @@
           "y": 4.1
         },
         {
-          "label": "L roller",
+          "label": "L dial",
           "x": 5.5,
           "y": 2.5
         },
         {
-          "label": "R roller",
+          "label": "R dial",
           "x": 7.5,
           "y": 2.5
         },
@@ -199,7 +199,7 @@
           "y": 3.5
         },
         {
-          "label": "R dial",
+          "label": "R roller",
           "x": 11,
           "y": 3.5
         }

@@ -1,0 +1,5 @@
+# Makes this config repo a Zephyr module, so the custom screen code in src/ is built.
+name: waterfowl-extras
+build:
+  cmake: .
+  kconfig: Kconfig

@@ -1,0 +1,409 @@
+<title>Waterfowl Layout Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column; the keyboard drawing breaks wider, with a layer switcher pinned above it. */
+:root {
+  --paper: #f5f7f4;
+  --ink: #141a17;
+  --muted: #5a6661;
+  --rule: #d6ddd8;
+  --cap: #ffffff;
+  --cap-edge: #c5cec9;
+  --cap-dim: #eef1ee;
+  --mallard: #1d6b57;
+  --mallard-soft: #d7ebe4;
+  --bill: #b9790f;
+  --bill-soft: #f7ead2;
+  --held: #1d6b57;
+  --held-ink: #ffffff;
+  --display: "Zen Kaku Gothic New", "Hiragino Sans", "Segoe UI", sans-serif;
+  --body: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #111614; --ink: #e8eeea; --muted: #9aa8a1; --rule: #2a332f;
+    --cap: #1d2421; --cap-edge: #34403b; --cap-dim: #161c19;
+    --mallard: #5cc3a2; --mallard-soft: #17332a; --bill: #e6ad48; --bill-soft: #33280f;
+    --held: #2f8f73; --held-ink: #ffffff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #111614; --ink: #e8eeea; --muted: #9aa8a1; --rule: #2a332f;
+  --cap: #1d2421; --cap-edge: #34403b; --cap-dim: #161c19;
+  --mallard: #5cc3a2; --mallard-soft: #17332a; --bill: #e6ad48; --bill-soft: #33280f;
+  --held: #2f8f73; --held-ink: #ffffff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 80px;
+}
+main { max-width: 1040px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+.prose { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.1rem; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mallard); }
+header { display: flex; flex-direction: column; gap: 14px; }
+header .lede { font-size: 1.15rem; color: var(--ink); max-width: 64ch; }
+section { display: flex; flex-direction: column; gap: 18px; }
+code, kbd { font-family: var(--mono); font-size: 0.86em; }
+kbd { background: var(--cap); border: 1px solid var(--cap-edge); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; white-space: nowrap; }
+a { color: var(--mallard); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--bill); outline-offset: 2px; }
+
+/* layer switcher */
+.switcher { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); padding-block: 10px; display: flex; flex-wrap: nowrap; overflow-x: auto; gap: 8px; border-bottom: 1px solid var(--rule); }
+.switcher button { flex: none; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.switcher button {
+  font: 600 0.95rem var(--body); color: var(--ink); background: var(--cap); border: 1px solid var(--cap-edge); border-bottom-width: 3px;
+  border-radius: 8px; padding: 7px 14px; cursor: pointer; display: inline-flex; gap: 8px; align-items: baseline;
+}
+.switcher button small { font: 400 0.75rem var(--mono); color: var(--muted); }
+.switcher button[aria-pressed="true"] { background: var(--held); color: var(--held-ink); border-color: var(--held); }
+.switcher button[aria-pressed="true"] small { color: var(--held-ink); opacity: 0.85; }
+.switcher .sep { width: 1px; background: var(--rule); margin: 2px 4px; }
+
+.board-wrap { overflow-x: auto; }
+.board { display: block; width: 100%; min-width: 640px; height: auto; }
+.layer-head { display: flex; flex-direction: column; gap: 6px; }
+.layer-head p { color: var(--muted); max-width: 70ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 18px; font-size: 0.85rem; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--cap-edge); display: inline-block; }
+.sw.held { background: var(--held); border-color: var(--held); }
+.sw.blank { background: var(--cap-dim); }
+.sw.hold { background: var(--bill-soft); border-color: var(--bill); }
+
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; }
+.two > * { min-width: 0; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.changes { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 10px; }
+.changes b { font-weight: 700; }
+
+/* OLED */
+.oled-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+.oled-card { border: 1px solid var(--rule); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; background: var(--cap); min-width: 0; }
+.oled-card .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 600 0.72rem var(--mono); letter-spacing: 0.04em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap; }
+.chip.good { color: var(--mallard); border-color: var(--mallard); background: var(--mallard-soft); }
+.chip.warn { color: var(--bill); border-color: var(--bill); background: var(--bill-soft); }
+.oled-card p { font-size: 0.95rem; }
+.oled-card .src { font-size: 0.85rem; margin-top: auto; }
+.screen { width: 64px; height: 128px; background: #000; border-radius: 3px; border: 3px solid #26343a; flex: none; overflow: hidden; }
+.screen canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
+.oled-top { display: flex; gap: 14px; align-items: flex-start; }
+.oled-top > div { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.group-label { font-family: var(--display); font-weight: 700; font-size: 1.15rem; margin-top: 8px; }
+
+.decide { display: flex; flex-direction: column; gap: 14px; }
+.q { border-left: 3px solid var(--bill); padding: 4px 0 4px 16px; display: flex; flex-direction: column; gap: 4px; }
+.q p { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">Waterfowl · 36 keys · 2 rollers · 2 dials · macOS</span>
+    <h1>Waterfowl Layout Plan</h1>
+    <p class="lede">A proposed keymap for your board, drawn on its real key positions, plus options for the two OLED screens. Nothing here is flashed yet. Pick the answers at the bottom and I'll build it.</p>
+  </header>
+
+  <section aria-labelledby="layers-h">
+    <div class="prose" style="display:flex;flex-direction:column;gap:10px">
+      <h2 id="layers-h">Layers</h2>
+      <p>The plan follows the idea behind Miryoku, the most widely used 36-key layout: each thumb key types something when tapped and opens a layer when held. Every layer then sits under the hand opposite the thumb you're holding. Home-row modifiers are ordered for a Mac, with Cmd under your middle finger instead of your pinky.</p>
+    </div>
+
+    <nav class="switcher" aria-label="Choose a layer" id="switcher"></nav>
+
+    <div class="layer-head">
+      <h3 id="layer-title"></h3>
+      <p id="layer-desc"></p>
+    </div>
+    <div class="board-wrap"><svg class="board" id="board" viewBox="0 0 924 362" role="img" aria-labelledby="layer-title"></svg></div>
+    <div class="legend">
+      <span><i class="sw"></i>Tap</span>
+      <span><i class="sw hold"></i>Hold (orange text)</span>
+      <span><i class="sw held"></i>Key you're holding to reach this layer</span>
+      <span><i class="sw blank"></i>Unused on this layer</span>
+    </div>
+
+    <div class="two">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <h3>Rollers and dials on this layer</h3>
+        <table>
+          <thead><tr><th>Control</th><th>Turn</th><th>Press</th></tr></thead>
+          <tbody id="enc-body"></tbody>
+        </table>
+        <p style="font-size:0.85rem;color:var(--muted)">Studio can't edit what the rollers and dials do when turned yet, so these live in the keymap file. Presses are normal keys and can be changed in Studio.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <h3>What changes from today</h3>
+        <ul class="changes">
+          <li><b>Calmer home-row mods.</b> The stock version waits 200 ms and tends to trigger Shift or Cmd while you type fast. The plan uses the widely shared “timeless” settings: a 280 ms threshold, mods only trigger when the next key is on the other hand, and they never trigger in the middle of a fast run of typing.</li>
+          <li><b>Mac modifier order.</b> Ctrl, Opt, Cmd, Shift from pinky to index, so Cmd is on the strong middle finger.</li>
+          <li><b>Thumbs do double duty.</b> Esc, Space and Tab on the left; Enter, Backspace and Delete on the right. Holding Space, Backspace, Enter, Esc or Delete opens a layer.</li>
+          <li><b>Mac shortcuts built in.</b> Undo, cut, copy, paste, line start and end, word jumps, tab switching, screenshots and media keys.</li>
+          <li><b>Roller and dial presses do something.</b> Today they type 1, 2, 3 and 4.</li>
+          <li><b>Fixes.</b> The stock backslash uses a code meant for European keyboards, and the apostrophe was buried on a layer. Both move to sensible spots.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="oled-h" id="oled">
+    <div class="prose" style="display:flex;flex-direction:column;gap:10px">
+      <h2 id="oled-h">OLED screens</h2>
+      <p>Your screens are 128×64 pixels but mounted upright, so anything you put on them has to be drawn sideways in software. ZMK v0.3 can't rotate the screen itself. That rules out a lot of what's out there. Two other facts shape the choice:</p>
+      <ul class="changes">
+        <li><b>Only the left half knows what you're doing.</b> Layer, modifiers and typing speed live on the left half. The right half only knows its own battery and whether it's connected to the left half.</li>
+        <li><b>The right half is always on battery.</b> An animation there keeps it awake and drains it noticeably faster. A still image costs almost nothing. Both screens switch off when you stop typing.</li>
+      </ul>
+    </div>
+    <div class="q" style="border-color:var(--mallard)"><h3>Recommendation</h3><p>Use <b>nice-oled</b> on both halves. Left: layer, Mac modifier symbols, Bluetooth or USB, both batteries and a typing-speed Bongo Cat. Right: a pixel-art duck, with an animation as an option once we see what it does to the battery.</p></div>
+    <div class="group-label">Useful information</div>
+    <div class="oled-grid" id="oled-useful"></div>
+    <div class="group-label">Fun</div>
+    <div class="oled-grid" id="oled-fun"></div>
+    <p style="font-size:0.85rem;color:var(--muted)">The small screens are mockups drawn in your browser to show the idea, not captures of the real firmware.</p>
+  </section>
+
+  <section aria-labelledby="decide-h" class="decide">
+    <h2 id="decide-h">Your call</h2>
+    <div class="q"><h3>1. Arrow keys: H J K L or inverted T?</h3><p>The plan puts ← ↓ ↑ → on H J K L, which keeps your fingers on the home row (Vim users know it). The alternative is a familiar inverted T on I / J K L.</p></div>
+    <div class="q"><h3>2. Apostrophe or semicolon on the right pinky?</h3><p>The plan puts <kbd>'</kbd> there because English uses it far more. <kbd>;</kbd> and <kbd>:</kbd> move to the Num and Sym layers. If you write a lot of code, you may prefer to keep <kbd>;</kbd>.</p></div>
+    <div class="q"><h3>3. Keep home-row mods?</h3><p>They're the reason a 36-key board works. If they feel bad after a week even with the calmer timing, the fallback is to put Shift on a thumb.</p></div>
+    <div class="q" id="oled-q"><h3>4. What goes on each screen?</h3><p>Left: an info screen, with Bongo Cat, Luna the dog, or just numbers. Right: the duck, an animation (gem, cat, spaceman, Pokémon), or a full mirror of the left screen later on.</p></div>
+  </section>
+</main>
+
+<script>
+// Key positions from QMK's waterfowl keyboard.json, in key units. Right half nudged 1u right for a visible split.
+const POS = [[0,1],[1,.25],[2,0],[3,.375],[4,.5],[9,.5],[10,.375],[11,0],[12,.25],[13,1],
+[0,2],[1,1.25],[2,1],[3,1.375],[4,1.5],[9,1.5],[10,1.375],[11,1],[12,1.25],[13,2],
+[0,3],[1,2.25],[2,2],[3,2.375],[4,2.5],[9,2.5],[10,2.375],[11,2],[12,2.25],[13,3],
+[2,3.5],[3.5,3.5],[4.5,3.7],[5.5,4.1],[5.5,2.5],[7.5,2.5],[7.5,4.1],[8.5,3.7],[9.5,3.5],[11,3.5]];
+const RIGHT = new Set([5,6,7,8,9,15,16,17,18,19,25,26,27,28,29,35,36,37,38,39]);
+const ROLLERS = new Set([30,39]), DIALS = new Set([34,35]);
+
+const _ = null;
+const MODS_R = {16:"Shift",17:"Cmd",18:"Opt",19:"Ctrl"};
+const MODS_L = {10:"Ctrl",11:"Opt",12:"Cmd",13:"Shift"};
+function layer(o){ const a = Array(40).fill(_); for (const k in o) a[k] = o[k]; return a; }
+
+const LAYERS = [
+ { id:"base", name:"Base", how:"always on", held:[],
+   desc:"QWERTY with home-row modifiers. Hold a home-row key for its modifier, tap it for the letter. Hold a thumb key to open a layer.",
+   keys: layer({0:"Q",1:"W",2:"E",3:"R",4:"T",5:"Y",6:"U",7:"I",8:"O",9:"P",
+     10:["A","Ctrl"],11:["S","Opt"],12:["D","Cmd"],13:["F","Shift"],14:"G",15:"H",16:["J","Shift"],17:["K","Cmd"],18:["L","Opt"],19:["'","Ctrl"],
+     20:"Z",21:"X",22:"C",23:"V",24:"B",25:"N",26:"M",27:",",28:".",29:"/",
+     30:"Mission Ctrl",31:["Esc","Fn"],32:["Space","Nav"],33:"Tab",34:"Mute",35:"Play/Pause",36:["Enter","Sym"],37:["Bksp","Num"],38:["Del","Fn"],39:"Spotlight"}),
+   enc:[["Left roller","Scroll page up / down","Mission Control"],["Left dial","Volume","Mute"],["Right dial","Previous / next tab","Play / pause"],["Right roller","Arrow up / down","Spotlight (⌘Space)"]] },
+ { id:"nav", name:"Nav", how:"hold Space", held:[32],
+   desc:"Arrows and Mac editing on the right hand. Your left home row turns into plain modifiers, so Shift plus arrows selects text, and Opt plus arrows jumps by word. The left bottom row is undo, cut, copy, paste and redo, in the same spots as ⌘Z X C V.",
+   keys: layer({...MODS_L,20:"Undo",21:"Cut",22:"Copy",23:"Paste",24:"Redo",
+     5:"Line start",6:"PgDn",7:"PgUp",8:"Line end",15:"←",16:"↓",17:"↑",18:"→",19:"Caps Word",
+     25:"Word ←",26:"Prev tab",27:"Next tab",28:"Word →",36:"Enter",37:"Bksp",38:"Del"}),
+   enc:[["Left roller","Scroll left / right","Mission Control"],["Left dial","Volume","Mute"],["Right dial","Previous / next tab","Play / pause"],["Right roller","Word ← / →","Spotlight"]] },
+ { id:"num", name:"Num", how:"hold Backspace", held:[37],
+   desc:"A number pad under your left hand, with 0 on the thumb you'd use for Space. The symbols around it are the ones that live next to numbers on a normal keyboard.",
+   keys: layer({0:"[",1:"7",2:"8",3:"9",4:"]",10:";",11:"4",12:"5",13:"6",14:"=",20:"`",21:"1",22:"2",23:"3",24:"\\",31:".",32:"0",33:"-",...MODS_R}),
+   enc:[["Left roller","Scroll page up / down","Mission Control"],["Left dial","Volume","Mute"],["Right dial","Previous / next tab","Play / pause"],["Right roller","Arrow up / down","Spotlight"]] },
+ { id:"sym", name:"Sym", how:"hold Enter", held:[36],
+   desc:"Every shifted symbol, in the same spot as its unshifted twin on the Num layer: & sits where 7 does, ( where 9 does, : where ; does.",
+   keys: layer({0:"{",1:"&",2:"*",3:"(",4:"}",10:":",11:"$",12:"%",13:"^",14:"+",20:"~",21:"!",22:"@",23:"#",24:"|",31:"(",32:")",33:"_",...MODS_R}),
+   enc:[["Left roller","Scroll page up / down","Mission Control"],["Left dial","Volume","Mute"],["Right dial","Previous / next tab","Play / pause"],["Right roller","Arrow up / down","Spotlight"]] },
+ { id:"fn", name:"Fn", how:"hold Esc or Del", held:[31,38],
+   desc:"F-keys on the left in the same grid as the number pad. Bluetooth, media and screen brightness on the right. BOOT puts that half into flashing mode, and Studio unlock is on G.",
+   keys: layer({0:"F12",1:"F7",2:"F8",3:"F9",4:"Shot ⌘⇧4",10:"F11",11:"F4",12:"F5",13:"F6",14:"Studio unlock",20:"F10",21:"F1",22:"F2",23:"F3",24:"BOOT left",
+     5:"BT 1",6:"BT 2",7:"BT 3",8:"BT 4",9:"BT clear",15:"Prev",16:"Vol −",17:"Vol +",18:"Next",19:"Play",25:"Mute",26:"Bright −",27:"Bright +",28:"USB/BT",29:"BOOT right"}),
+   enc:[["Left roller","Scroll page up / down","Mission Control"],["Left dial","Screen brightness","Mute"],["Right dial","Zoom out / in (⌘− / ⌘+)","Play / pause"],["Right roller","Arrow up / down","Spotlight"]] },
+ { id:"today", name:"Today", how:"current stock base", held:[], today:true,
+   desc:"What your Base layer is right now, for comparison. Rollers and dials type 1 through 4 when pressed, Delete holds the Function layer, and Cmd is under the pinky.",
+   keys: layer({0:"Q",1:"W",2:"E",3:"R",4:"T",5:"Y",6:"U",7:"I",8:"O",9:"P",
+     10:["A","Cmd"],11:["S","Opt"],12:["D","Ctrl"],13:["F","Shift"],14:"G",15:"H",16:["J","Shift"],17:["K","Ctrl"],18:["L","Opt"],19:[";","Cmd"],
+     20:"Z",21:"X",22:"C",23:"V",24:"B",25:"N",26:"M",27:",",28:".",29:"/",
+     30:"1",31:["Del","Fn"],32:["Space","Nav/Num"],33:"Tab",34:"2",35:"3",36:"Esc",37:"Bksp",38:["Enter","Sym"],39:"4"}),
+   enc:[["Left roller","Page down / up","types 1"],["Left dial","Volume","types 2"],["Right dial","Arrow down / up","types 3"],["Right roller","Arrow left / right","types 4"]] },
+];
+
+const U = 60, PAD = 14, GAP = 1;
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, text){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; return e; }
+function fit(label){ const n = label.length; return n <= 2 ? 19 : n <= 5 ? 14 : n <= 8 ? 11.5 : 10; }
+function split(label){ if (label.length <= 9 || !label.includes(" ")) return [label]; const i = label.indexOf(" "); return [label.slice(0,i), label.slice(i+1)]; }
+
+function draw(L){
+  const svg = document.getElementById("board"); svg.replaceChildren();
+  POS.forEach(([x,y], i) => {
+    const gx = PAD + (x + (RIGHT.has(i) ? GAP : 0)) * U, gy = PAD + y * U;
+    const v = L.keys[i]; const tap = Array.isArray(v) ? v[0] : v; const hold = Array.isArray(v) ? v[1] : null;
+    const held = L.held.includes(i); const blank = tap == null;
+    const g = el("g", {});
+    const fill = held ? "var(--held)" : blank ? "var(--cap-dim)" : "var(--cap)";
+    const stroke = held ? "var(--held)" : "var(--cap-edge)";
+    if (DIALS.has(i)) {
+      g.append(el("circle", {cx: gx + 27, cy: gy + 27, r: 27, fill, stroke, "stroke-width": 1.5}));
+      g.append(el("circle", {cx: gx + 27, cy: gy + 27, r: 21, fill: "none", stroke, "stroke-dasharray": "2 4", "stroke-width": 1}));
+    } else if (ROLLERS.has(i)) {
+      g.append(el("rect", {x: gx + 9, y: gy, width: 36, height: 54, rx: 8, fill, stroke, "stroke-width": 1.5}));
+      for (let s = 0; s < 6; s++) g.append(el("line", {x1: gx + 13, x2: gx + 41, y1: gy + 6 + s * 8.5, y2: gy + 6 + s * 8.5, stroke: "var(--cap-edge)", "stroke-width": 1}));
+    } else {
+      g.append(el("rect", {x: gx, y: gy, width: 54, height: 54, rx: 8, fill, stroke, "stroke-width": 1.5}));
+      g.append(el("rect", {x: gx + 4, y: gy + 3, width: 46, height: 42, rx: 6, fill: "none", stroke: held ? "var(--held-ink)" : "var(--cap-edge)", "stroke-opacity": held ? 0.25 : 0.6, "stroke-width": 1}));
+    }
+    if (!blank) {
+      const lines = split(tap); const fs = fit(lines.reduce((a, b) => a.length > b.length ? a : b));
+      const cy = gy + (hold ? 22 : 27) - (lines.length - 1) * fs * 0.55;
+      const encLabel = DIALS.has(i) || ROLLERS.has(i);
+      lines.forEach((ln, j) => {
+        const t = el("text", {x: gx + 27, y: cy + j * fs * 1.1, "text-anchor": "middle", "dominant-baseline": "central",
+          "font-family": "var(--display)", "font-weight": 700, "font-size": encLabel ? Math.min(fs, 9.5) : fs,
+          fill: held ? "var(--held-ink)" : "var(--ink)"}, ln);
+        if (encLabel) { t.setAttribute("paint-order", "stroke"); t.setAttribute("stroke", held ? "var(--held)" : "var(--cap)"); t.setAttribute("stroke-width", 3); }
+        g.append(t);
+      });
+      if (hold) g.append(el("text", {x: gx + 27, y: gy + 42, "text-anchor": "middle", "dominant-baseline": "central",
+        "font-family": "var(--mono)", "font-weight": 600, "font-size": 9.5, fill: held ? "var(--held-ink)" : "var(--bill)"}, hold));
+    }
+    const title = el("title", {}, (blank ? "unused" : tap) + (hold ? ", hold: " + hold : "") + (DIALS.has(i) ? " (dial press)" : ROLLERS.has(i) ? " (roller press)" : ""));
+    g.append(title); svg.append(g);
+  });
+  // half labels
+  svg.append(el("text", {x: PAD + 2.5 * U, y: 350, "text-anchor": "middle", "font-family": "var(--mono)", "font-size": 11, fill: "var(--muted)", "letter-spacing": "0.1em"}, "LEFT HALF"));
+  svg.append(el("text", {x: PAD + (10.5 + GAP) * U, y: 350, "text-anchor": "middle", "font-family": "var(--mono)", "font-size": 11, fill: "var(--muted)", "letter-spacing": "0.1em"}, "RIGHT HALF"));
+
+  document.getElementById("layer-title").textContent = L.today ? "Today's Base layer (for comparison)" : L.name + " layer: " + L.how;
+  document.getElementById("layer-desc").textContent = L.desc;
+  document.getElementById("enc-body").replaceChildren(...L.enc.map(r => { const tr = document.createElement("tr"); r.forEach(c => { const td = document.createElement("td"); td.textContent = c; tr.append(td); }); return tr; }));
+}
+
+const sw = document.getElementById("switcher");
+LAYERS.forEach((L, i) => {
+  if (L.today) { const s = document.createElement("span"); s.className = "sep"; sw.append(s); }
+  const b = document.createElement("button"); b.type = "button"; b.id = "tab-" + L.id;
+  b.innerHTML = L.name + " <small></small>"; b.querySelector("small").textContent = L.how;
+  b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+  b.addEventListener("click", () => { sw.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); draw(L); try { localStorage.setItem("wf-layer", L.id); } catch (e) {} });
+  sw.append(b);
+});
+// ---------- OLED options ----------
+const OLED = [
+ { group:"useful", name:"nice-oled info screen", pick:true, mock:"info",
+   chips:[["Best fit","good"],["Both halves","good"],["Upright","good"],["v0.3","good"]],
+   body:"Left half: layer name, Bluetooth profile or USB, battery for both halves, Mac modifier symbols (⌘ ⌥ ⌃ ⇧), Caps Lock, and typing speed as a number, gauge or graph. It draws upright, which suits your screens. Made for 128×32 screens, with partial 128×64 support, so I'll need to adjust where things sit. It doesn't run on newer ZMK, which is fine since your config is pinned to v0.3.",
+   src:["mctechnology17/zmk-nice-oled","https://github.com/mctechnology17/zmk-nice-oled"] },
+ { group:"useful", name:"ZMK's built-in screen", mock:"builtin",
+   chips:[["Works today","good"],["Both halves","good"],["Sideways","warn"]],
+   body:"What your screens can show right now with no extra code. Left: USB or Bluetooth profile, battery, layer and typing speed. Right: connection to the left half and its battery. It's drawn for a wide screen, so on yours the text reads sideways.",
+   src:["ZMK display docs","https://zmk.dev/docs/features/displays"] },
+ { group:"useful", name:"Dongle Display layout", mock:"dongle",
+   chips:[["Left half only","warn"],["Sideways","warn"],["128×64 native","good"]],
+   body:"The nicest info layout made for a 128×64 screen: big layer name, Mac modifier symbols, both batteries and a Bongo Cat. It's wide-only, so it would only look right if you remounted the screens sideways, or if I adapted it.",
+   src:["englmaxi/zmk-dongle-display","https://github.com/englmaxi/zmk-dongle-display"] },
+ { group:"fun", name:"Bongo Cat or Luna", mock:"wpm",
+   chips:[["Left half","good"],["Part of nice-oled","good"]],
+   body:"Classic keyboard pets. Bongo Cat drums faster as you type faster; Luna the dog sits, walks or runs depending on your speed, and nice-oled can also make her react to Caps Lock and modifiers. Both live on the left half because they need your typing speed. A plain line graph of your speed is another option in the same spot.",
+   src:["nice-oled options","https://github.com/mctechnology17/zmk-nice-oled"] },
+ { group:"fun", name:"Pixel-art duck", mock:"duck", pick:true,
+   chips:[["Right half","good"],["Easy on battery","good"]],
+   body:"A still image for the right half, so your board shows its own mascot. I'd draw a duck in 1-bit pixel art to match the duck printed on your PCB. A still image uses almost no power, and nice-oled supports custom images.",
+   src:["nice-oled static images","https://github.com/mctechnology17/zmk-nice-oled"] },
+ { group:"fun", name:"Peripheral animations", mock:"crystal",
+   chips:[["Right half","good"],["Drains battery","warn"]],
+   body:"nice-oled ships looping animations for the right half: a spinning gem or crystal, a cat, a spaceman, or Pokémon. They look great but keep the right half awake, and nice-oled's author warns they noticeably shorten battery life.",
+   src:["nice-oled animations","https://github.com/mctechnology17/zmk-nice-oled"] },
+ { group:"fun", name:"Demo-scene effects", mock:"rain",
+   chips:[["Right half","good"],["Unfinished","warn"],["Drains battery","warn"]],
+   body:"Live effects drawn by the keyboard's own chip: Matrix rain, a starfield, plasma, a spinning 3D cube, metaballs. A new project its author marks as unfinished and not yet tested on real hardware, so treat it as an experiment.",
+   src:["delneet/zmk-peripheral-animations","https://github.com/delneet/zmk-peripheral-animations"] },
+ { group:"fun", name:"Mirror the left screen", mock:"mirror",
+   chips:[["Right half","good"],["Brand new","warn"],["Needs porting","warn"]],
+   body:"A new module that sends layer, modifiers, typing speed and both batteries from the left half to the right, so the right screen can show full status too. It's built for a different screen type (nice!view), so it would need adapting. Worth revisiting later.",
+   src:["cjpeterein/zmk-split-display-view","https://github.com/cjpeterein/zmk-split-display-view"] },
+];
+
+function px(ctx){ ctx.fillStyle = "#000"; ctx.fillRect(0, 0, 64, 128); ctx.fillStyle = "#e9fbff"; }
+function txt(ctx, s, x, y, size){ ctx.font = "700 " + (size || 8) + "px monospace"; ctx.textBaseline = "top"; ctx.fillText(s, x, y); }
+function battery(ctx, x, y, pct){ ctx.strokeStyle = "#e9fbff"; ctx.lineWidth = 1; ctx.strokeRect(x + .5, y + .5, 22, 9); ctx.fillRect(x + 23, y + 3, 2, 4); ctx.fillRect(x + 2, y + 2, Math.round(19 * pct / 100), 6); }
+const MOCKS = {
+  info(ctx, t){ px(ctx); txt(ctx, "BT 1", 4, 4, 10); battery(ctx, 36, 5, 82); ctx.fillRect(4, 18, 56, 1);
+    txt(ctx, "LAYER", 4, 24, 7); txt(ctx, ["BASE","NAV","SYM"][Math.floor(t / 1600) % 3], 4, 33, 13);
+    ctx.fillRect(4, 50, 56, 1); txt(ctx, "⌘ ⌥ ⌃ ⇧", 4, 55, 11);
+    const on = Math.floor(t / 800) % 4; ctx.fillRect(4 + on * 14, 69, 10, 2);
+    ctx.fillRect(4, 76, 56, 1); txt(ctx, "WPM", 4, 81, 7); txt(ctx, String(40 + Math.round(25 * Math.abs(Math.sin(t / 1400)))), 30, 80, 11);
+    for (let i = 0; i < 28; i++) { const h = 4 + Math.round(10 * Math.abs(Math.sin(i * .5 + t / 900))); ctx.fillRect(4 + i * 2, 110 - h, 1, h); }
+    txt(ctx, "R", 4, 115, 8); battery(ctx, 14, 115, 64); },
+  builtin(ctx){ px(ctx); ctx.save(); ctx.translate(64, 0); ctx.rotate(Math.PI / 2);
+    txt(ctx, "BT1 ✓", 4, 4, 11); battery(ctx, 96, 5, 82); txt(ctx, "▤ Base", 4, 40, 11); txt(ctx, "52", 104, 40, 11); ctx.restore(); },
+  dongle(ctx, t){ px(ctx); ctx.save(); ctx.translate(64, 0); ctx.rotate(Math.PI / 2);
+    battery(ctx, 4, 4, 82); battery(ctx, 34, 4, 64); txt(ctx, "BT1", 100, 4, 9);
+    txt(ctx, ["BASE","NAV","NUM"][Math.floor(t / 1600) % 3], 4, 20, 18); txt(ctx, "⌘ ⌥ ⌃ ⇧", 4, 44, 10); ctx.restore(); },
+  wpm(ctx, t){ px(ctx); const up = Math.floor(t / 220) % 2;
+    // a simple cat: head, ears, eyes, paws tapping a desk line
+    ctx.fillRect(14, 40, 36, 26); ctx.fillRect(14, 32, 8, 8); ctx.fillRect(42, 32, 8, 8);
+    ctx.fillStyle = "#000"; ctx.fillRect(22, 48, 4, 4); ctx.fillRect(38, 48, 4, 4); ctx.fillRect(30, 56, 4, 2); ctx.fillStyle = "#e9fbff";
+    ctx.fillRect(10, up ? 70 : 76, 10, 6); ctx.fillRect(44, up ? 76 : 70, 10, 6); ctx.fillRect(2, 84, 60, 2);
+    txt(ctx, "WPM", 4, 96, 8); txt(ctx, String(up ? 61 : 58), 32, 95, 11); },
+  duck(ctx){ px(ctx);
+    const shape = f => { ctx.beginPath(); f(); ctx.fill(); };
+    shape(() => ctx.arc(38, 34, 10, 0, Math.PI * 2));
+    shape(() => { ctx.moveTo(46, 30); ctx.lineTo(59, 35); ctx.lineTo(46, 39); });
+    ctx.fillRect(31, 38, 11, 18);
+    shape(() => ctx.ellipse(30, 66, 24, 13, 0, 0, Math.PI * 2));
+    shape(() => { ctx.moveTo(4, 56); ctx.lineTo(14, 60); ctx.lineTo(10, 68); });
+    ctx.fillStyle = "#000"; shape(() => ctx.arc(40, 31, 1.6, 0, Math.PI * 2));
+    ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(28, 62, 11, 0.15 * Math.PI, 0.95 * Math.PI); ctx.stroke();
+    ctx.fillStyle = "#e9fbff";
+    for (let i = 0; i < 4; i++) { ctx.fillRect(2 + i * 16, 84, 9, 2); ctx.fillRect(10 + i * 16, 91, 9, 2); }
+    txt(ctx, "waterfowl", 5, 106, 8); },
+  crystal(ctx, t){ px(ctx); const a = t / 900; const cx = 32, cy = 58; const pts = [];
+    for (let i = 0; i < 6; i++) { const ang = a + i * Math.PI / 3; pts.push([cx + Math.cos(ang) * 20, cy + Math.sin(ang) * 6]); }
+    ctx.strokeStyle = "#e9fbff"; ctx.lineWidth = 1; ctx.beginPath();
+    pts.forEach(p => { ctx.moveTo(cx, cy - 34); ctx.lineTo(p[0], p[1]); ctx.moveTo(cx, cy + 34); ctx.lineTo(p[0], p[1]); });
+    pts.forEach((p, i) => { const q = pts[(i + 1) % 6]; ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); }); ctx.stroke();
+    battery(ctx, 20, 108, 64); },
+  rain(ctx, t){ px(ctx); for (let c = 0; c < 9; c++) { const speed = 30 + (c * 37) % 50; const head = ((t / 1000 * speed) + c * 41) % 160;
+      for (let k = 0; k < 10; k++) { const y = Math.floor(head - k * 7); if (y < 0 || y > 124) continue; ctx.globalAlpha = 1 - k / 10;
+        txt(ctx, String.fromCharCode(0x30A0 + ((c * 7 + k * 3 + Math.floor(t / 300)) % 90)), c * 7, y, 7); } } ctx.globalAlpha = 1; },
+  mirror(ctx, t){ MOCKS.info(ctx, t + 700); ctx.fillStyle = "#000"; ctx.fillRect(40, 115, 24, 13); ctx.fillStyle = "#e9fbff"; txt(ctx, "L", 4, 115, 8); },
+};
+
+const anim = [];
+function card(o){
+  const c = document.createElement("article"); c.className = "oled-card";
+  const top = document.createElement("div"); top.className = "oled-top";
+  const scr = document.createElement("div"); scr.className = "screen";
+  const cv = document.createElement("canvas"); cv.width = 64; cv.height = 128; cv.setAttribute("role", "img"); cv.setAttribute("aria-label", "Mockup of " + o.name);
+  scr.append(cv); top.append(scr);
+  const info = document.createElement("div");
+  const h = document.createElement("h3"); h.textContent = o.name + (o.pick ? " ✓" : ""); info.append(h);
+  const meta = document.createElement("div"); meta.className = "meta";
+  o.chips.forEach(([t, k]) => { const s = document.createElement("span"); s.className = "chip " + k; s.textContent = t; meta.append(s); });
+  if (o.pick) { const s = document.createElement("span"); s.className = "chip good"; s.textContent = "Recommended"; meta.prepend(s); }
+  info.append(meta); top.append(info); c.append(top);
+  const p = document.createElement("p"); p.textContent = o.body; c.append(p);
+  const a = document.createElement("a"); a.href = o.src[1]; a.textContent = o.src[0]; a.target = "_blank"; a.rel = "noopener";
+  const src = document.createElement("p"); src.className = "src"; src.append(a); c.append(src);
+  const ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = false; MOCKS[o.mock](ctx, 0); anim.push([ctx, MOCKS[o.mock]]);
+  return c;
+}
+OLED.forEach(o => document.getElementById(o.group === "useful" ? "oled-useful" : "oled-fun").append(card(o)));
+const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!still) { let last = 0; const tick = now => { if (now - last > 90) { last = now; anim.forEach(([ctx, f]) => f(ctx, now)); } requestAnimationFrame(tick); }; requestAnimationFrame(tick); }
+
+let start = LAYERS[0];
+try { const saved = localStorage.getItem("wf-layer"); start = LAYERS.find(l => l.id === saved) || start; } catch (e) {}
+document.getElementById("tab-" + start.id).click();
+</script>

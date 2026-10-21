@@ -2,11 +2,15 @@
 
 Firmware config for a Waterfowl split keyboard (nice!nano v2 on both halves, rollers, dials and OLEDs) running ZMK v0.3 with **ZMK Studio** turned on.
 
+The layout is a Mac-flavored take on Miryoku: home-row modifiers (Ctrl, Opt, Cmd, Shift), and thumb keys that type when tapped and open a layer when held. See [docs/layout-plan.html](docs/layout-plan.html) for drawings of every layer.
+
 | File | What it is |
 |---|---|
-| `config/waterfowl.keymap` | The stock keymap: 4 layers plus 3 spare layers for Studio |
+| `config/waterfowl.keymap` | The keymap: Base, Nav, Num, Sym and Fn layers plus 3 spare layers for Studio |
 | `config/waterfowl_layout.dtsi` | The key-position map Studio uses to draw the keyboard (included by `waterfowl_left.overlay` and `waterfowl_right.overlay`) |
-| `config/waterfowl.conf` | Turns on the rollers, dials and screens |
+| `config/waterfowl.conf` | Turns on the rollers, dials and screens (both halves) |
+| `config/waterfowl_left.conf`, `config/waterfowl_right.conf` | What each screen shows |
+| `src/peripheral_bongo_cat.c` | Bongo Cat on the right screen, tapping along with that half's keys |
 | `config/info.json` | Same key positions, for Keymap Editor |
 | `build.yaml` | What GitHub builds: left (with Studio), right, settings reset |
 | `firmware/` | Firmware built locally with Docker (ignored by git) |
@@ -15,7 +19,7 @@ Firmware config for a Waterfowl split keyboard (nice!nano v2 on both halves, rol
 
 1. Plug the **left** half into the Mac with USB.
 2. Open the [ZMK Studio app](https://zmk.studio/download) or [zmk.studio](https://zmk.studio/) in Chrome or Edge, then pick "Waterfowl".
-3. Unlock it when asked: hold **DEL** (left thumb) and tap **W**.
+3. Unlock it when asked: hold **Del** (right outer thumb) and tap **G**.
 4. Click a key, choose what it should do. Changes take effect right away and stay on the keyboard after unplugging. No reflashing needed.
 5. Layers: use the layer list on the left to switch between layers, rename them, or turn on one of the three spare layers.
 
@@ -32,7 +36,7 @@ Studio can't edit these yet: combos, macros, tap-dance, hold-tap timing, and wha
 ## Flashing a half
 
 1. Put the half into flashing mode, either way:
-   - Hold **DEL** and tap the top-left key (left half) or the bottom-right key (right half). That's the **BOOT** key on the Function layer.
+   - Hold **Del** (right outer thumb) and tap **B** for the left half, or hold **Esc** (left outer thumb) and tap **/** for the right half. Those are the **BOOT** keys on the Fn layer.
    - Or quickly double-tap the reset button on that half (needed the first time, since the old firmware has no BOOT key).
 2. A drive named `NICENANO` shows up. Copy the matching `.uf2` file onto it. The half restarts by itself.
    macOS may say the disk wasn't ejected properly; that's normal. If Finder refuses to copy, use Terminal:
@@ -50,14 +54,30 @@ The first time, flash **both** halves so they run the same ZMK version.
 3. Restart both halves at the same time. They should pair within a few seconds.
 4. Re-pair any computers you used over Bluetooth.
 
-## Function layer (hold DEL)
+## Layers
+
+| Layer | How to reach it | What's on it |
+|---|---|---|
+| Base | always on | QWERTY. Hold A S D F or J K L ' for Ctrl, Opt, Cmd, Shift |
+| Nav | hold **Space** | Arrows on H J K L, line start/end, page up/down, word jumps, tab switching, undo/cut/copy/paste/redo |
+| Num | hold **Backspace** | Number pad under the left hand, 0 on the left middle thumb |
+| Sym | hold **Enter** | Shifted symbols in the same spots as their Num twins |
+| Fn | hold **Esc** or **Del** | F-keys on the left; Bluetooth, media and brightness on the right |
+
+## Fn layer (hold Esc or Del)
 
 | Key | Does |
 |---|---|
-| Q position | BOOT (left half flashing mode) |
-| W position | Unlock Studio |
-| E position | Forget the current Bluetooth device |
-| R position | Toggle output between USB and Bluetooth |
-| T / Y positions | Restart the keyboard |
-| Home row, left | Bluetooth device 0–4 |
-| Bottom-right (/ position) | BOOT (right half flashing mode) |
+| T position | Screenshot of an area (⌘⇧4) |
+| G position | Unlock Studio |
+| B position | BOOT (left half flashing mode) |
+| Y U I O | Bluetooth device 1–4 |
+| P | Forget the current Bluetooth device |
+| H J K L ' | Previous, volume down, volume up, next, play/pause |
+| N M , | Mute, brightness down, brightness up |
+| . position | Toggle output between USB and Bluetooth |
+| / position | BOOT (right half flashing mode) |
+
+## Screens
+
+The left screen shows the layer, Bluetooth profile or USB, both batteries, Mac modifier symbols, Caps Lock and typing speed. The right screen shows its battery, its link to the left half and a Bongo Cat that taps a paw for each key you press on the right half. Both screens turn off when you stop typing.

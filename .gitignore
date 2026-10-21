@@ -1,7 +1,6 @@
 build/
 .west/
-zmk/
-zephyr/
-modules/
+/zmk/
+/modules/
 *.uf2
 .DS_Store

@@ -1,5 +1,5 @@
 /*
- * Waterfowl keymap, based on the ZMK default.
+ * Waterfowl keymap for macOS, Miryoku-style.
  *
  * Once ZMK Studio is in use, Studio's saved changes override this file.
  * Use "Restore Stock Settings" in Studio to go back to what's written here.
@@ -7,7 +7,8 @@
  * Each layer has 40 bindings, laid out as on the board:
  *
  *   10 top row  |  10 home row  |  10 bottom row
- *   L dial, L thumbs x3, L roller press | R roller press, R thumbs x3, R dial
+ *   L roller press, L thumbs (outer, middle, inner), L dial press |
+ *   R dial press, R thumbs (inner, middle, outer), R roller press
  *
  * sensor-bindings are the rotations, in order:
  *   left roller, left dial, right dial, right roller
@@ -17,6 +18,38 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/pointing.h>
+
+#define BASE 0
+#define NAV  1
+#define NUM  2
+#define SYM  3
+#define FN   4
+
+// Key positions, for home-row mods that only trigger with the other hand.
+#define KEYS_L 0 1 2 3 4 10 11 12 13 14 20 21 22 23 24
+#define KEYS_R 5 6 7 8 9 15 16 17 18 19 25 26 27 28 29
+#define THUMBS 30 31 32 33 34 35 36 37 38 39
+
+// macOS shortcuts
+#define UNDO      LG(Z)
+#define CUT       LG(X)
+#define COPY      LG(C)
+#define PASTE     LG(V)
+#define REDO      LG(LS(Z))
+#define LINE_BEG  LG(LEFT)
+#define LINE_END  LG(RIGHT)
+#define WORD_BCK  LA(LEFT)
+#define WORD_FWD  LA(RIGHT)
+#define TAB_PREV  LC(LS(TAB))
+#define TAB_NEXT  LC(TAB)
+#define MISSION   LC(UP)
+#define SPOTLIGHT LG(SPACE)
+#define SHOT      LG(LS(N4))
+
+&lt {
+    quick-tap-ms = <175>;
+};
 
 / {
     // Studio needs the physical layout from waterfowl_layout.dtsi, so drop the
@@ -25,131 +58,160 @@
         /delete-property/ zmk,matrix-transform;
     };
 
+    behaviors {
+        // "Timeless" home-row mods: a mod only triggers when the next key is on
+        // the other hand, and never in the middle of a fast run of typing.
+        hml: homerow_mods_left {
+            compatible = "zmk,behavior-hold-tap";
+            display-name = "Home Row Mod (left)";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <150>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <KEYS_R THUMBS>;
+            hold-trigger-on-release;
+        };
+
+        hmr: homerow_mods_right {
+            compatible = "zmk,behavior-hold-tap";
+            display-name = "Home Row Mod (right)";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <175>;
+            require-prior-idle-ms = <150>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <KEYS_L THUMBS>;
+            hold-trigger-on-release;
+        };
+
+        scroll_enc: scroll_encoder {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
+            tap-ms = <30>;
+        };
+
+        hscroll_enc: horizontal_scroll_encoder {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&msc SCRL_RIGHT>, <&msc SCRL_LEFT>;
+            tap-ms = <30>;
+        };
+
+        tab_enc: tab_encoder {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&kp TAB_NEXT>, <&kp TAB_PREV>;
+        };
+
+        word_enc: word_encoder {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&kp WORD_FWD>, <&kp WORD_BCK>;
+        };
+
+        zoom_enc: zoom_encoder {
+            compatible = "zmk,behavior-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            bindings = <&kp LG(EQUAL)>, <&kp LG(MINUS)>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
-        default_layer {
+        base_layer {
             display-name = "Base";
-/* QWERTY
- *
- * ,----------------------------------.                      ,----------------------------------.
- * |   Q  |   W  |   E  |   R  |   T  |                      |   Y  |   U  |   I  |   O  |   P  |
- * |------+------+------+------+------|                      |------+------+------+------+------|
- * |   A  |   S  |   D  |   F  |   G  |                      |   H  |   J  |   K  |   L  |   ;  |
- * |------+------+------+------+------|  ,-----.    ,-----.  |------+------+------+------+------|
- * |   Z  |   X  |   C  |   V  |   B  |  |  2  |    |  3  |  |   N  |   M  |   ,  |   .  |   /  |
- * `----------------------------------'  `-----'    `-----'  `----------------------------------'
- *          ,-----.   ,--------------------.            ,--------------------.   ,-----.
- *          |  1  |   | DEL | SPACE | TAB  |            |  ESC  | BS | ENTER |   |  4  |
- *          `-----'   `--------------------'            `--------------------'   `-----'
+/*
+ *  Q     W     E     R     T                    Y     U     I     O     P
+ *  A/Ct  S/Op  D/Cm  F/Sh  G                    H     J/Sh  K/Cm  L/Op  '/Ct
+ *  Z     X     C     V     B      (dial)(dial)  N     M     ,     .     /
+ *  (roller)  Esc/Fn  Spc/Nav  Tab           Ent/Sym  Bksp/Num  Del/Fn  (roller)
  */
             bindings = <
-    &kp Q       &kp W       &kp E       &kp R       &kp T           &kp Y   &kp U       &kp I       &kp O       &kp P
-    &mt LGUI A  &mt LALT S  &mt LCTRL D &mt LSHFT F &kp G           &kp H   &mt LSHFT J &mt LCTRL K &mt LALT L  &mt LGUI SEMI
-    &kp Z       &kp X       &kp C       &kp V       &kp B           &kp N   &kp M       &kp COMMA   &kp DOT     &kp FSLH
-    &kp N1      &lt 3 DEL   &lt 1 SPACE &kp TAB     &kp N2          &kp N3  &kp ESC     &kp BSPC    &lt 2 RET   &kp N4
+    &kp Q          &kp W          &kp E          &kp R          &kp T            &kp Y   &kp U          &kp I          &kp O          &kp P
+    &hml LCTRL A   &hml LALT S    &hml LGUI D    &hml LSHFT F   &kp G            &kp H   &hmr RSHFT J   &hmr RGUI K    &hmr RALT L    &hmr RCTRL SQT
+    &kp Z          &kp X          &kp C          &kp V          &kp B            &kp N   &kp M          &kp COMMA      &kp DOT        &kp FSLH
+    &kp MISSION    &lt FN ESC     &lt NAV SPACE  &kp TAB        &kp C_MUTE       &kp C_PP  &lt SYM RET  &lt NUM BSPC   &lt FN DEL     &kp SPOTLIGHT
             >;
 
-            sensor-bindings = <
-                &inc_dec_kp PAGE_DOWN PAGE_UP
-                &inc_dec_kp C_VOL_DN C_VOL_UP
-                &inc_dec_kp DOWN UP
-                &inc_dec_kp LEFT RIGHT
-            >;
+            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp DOWN UP>;
         };
 
-        navnum_layer {
-            display-name = "Nav/Num";
-/* NAVNUM
- *
- * ,----------------------------------.                      ,----------------------------------.
- * |      | PgUp |  UP  | PgDn |      |                      |   /  |   7  |   8  |   9  |   -  |
- * |------+------+------+------+------|                      |------+------+------+------+------|
- * | Home | Left | Down | Right| End  |                      |   =  |   4  |   5  |   6  |   +  |
- * |------+------+------+------+------|  ,-----.    ,-----.  |------+------+------+------+------|
- * |      |      |  INS |      |      |  |  2  |    |  3  |  |   0  |   1  |   2  |   3  |   *  |
- * `----------------------------------'  `-----'    `-----'  `----------------------------------'
- *          ,-----.   ,--------------------.            ,--------------------.   ,-----.
- *          |  1  |   | DEL | SPACE | MO(3)|            |  ESC  | BS | ENTER |   |  4  |
- *          `-----'   `--------------------'            `--------------------'   `-----'
+        nav_layer {
+            display-name = "Nav";
+/*  hold Space
+ *  .     .     .     .     .                    LnBeg PgDn  PgUp  LnEnd .
+ *  Ctrl  Opt   Cmd   Shift .                    ←     ↓     ↑     →     CapsWord
+ *  Undo  Cut   Copy  Paste Redo                 Word← Tab←  Tab→  Word→ .
+ *              .     [held] .                   Enter Bksp  Del
  */
             bindings = <
-    &trans      &kp PG_UP   &kp UP      &kp PG_DN   &trans                  &kp FSLH    &kp N7  &kp N8      &kp N9      &kp MINUS
-    &kp HOME    &kp LEFT    &kp DOWN    &kp RIGHT   &kp END                 &kp EQUAL   &kp N4  &kp N5      &kp N6      &kp PLUS
-    &trans      &trans      &kp INS     &trans      &trans                  &kp N0      &kp N1  &kp N2      &kp N3      &kp ASTERISK
-    &kp N1      &lt 3 DEL   &lt 1 SPACE &kp TAB     &kp N2                  &kp N3      &kp ESC &kp BSPC    &lt 2 RET   &kp N4
+    &none          &none          &none          &none          &none            &kp LINE_BEG  &kp PG_DN     &kp PG_UP     &kp LINE_END  &none
+    &kp LCTRL      &kp LALT       &kp LGUI       &kp LSHFT      &none            &kp LEFT      &kp DOWN      &kp UP        &kp RIGHT     &caps_word
+    &kp UNDO       &kp CUT        &kp COPY       &kp PASTE      &kp REDO         &kp WORD_BCK  &kp TAB_PREV  &kp TAB_NEXT  &kp WORD_FWD  &none
+    &trans         &none          &trans         &none          &trans           &trans        &kp RET       &kp BSPC      &kp DEL       &trans
             >;
 
-            sensor-bindings = <
-                &inc_dec_kp PAGE_DOWN PAGE_UP
-                &inc_dec_kp C_VOL_DN C_VOL_UP
-                &inc_dec_kp DOWN UP
-                &inc_dec_kp LEFT RIGHT
-            >;
+            sensor-bindings = <&hscroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &word_enc>;
         };
 
-        symbol_layer {
-            display-name = "Symbol";
-/* SYM
- *
- * ,----------------------------------.                      ,----------------------------------.
- * |   %  |   @  |   [  |   ]  |   \  |                      |      |      |   ^  |      |      |
- * |------+------+------+------+------|                      |------+------+------+------+------|
- * |   #  |   !  |   (  |   )  |   |  |                      |   _  |   '  |   "  |   ~  |   `  |
- * |------+------+------+------+------|  ,-----.    ,-----.  |------+------+------+------+------|
- * |   $  |      |   {  |   }  |   &  |  |  2  |    |  3  |  |      |      |      |      |      |
- * `----------------------------------'  `-----'    `-----'  `----------------------------------'
- *          ,-----.   ,--------------------.            ,--------------------.   ,-----.
- *          |  1  |   | DEL | SPACE | TAB  |            |  ESC  | BS | ENTER |   |  4  |
- *          `-----'   `--------------------'            `--------------------'   `-----'
+        num_layer {
+            display-name = "Num";
+/*  hold Backspace
+ *  [     7     8     9     ]                    .     .     .     .     .
+ *  ;     4     5     6     =                    .     Shift Cmd   Opt   Ctrl
+ *  `     1     2     3     \                    .     .     .     .     .
+ *              .     0     -                    .     [held] .
  */
             bindings = <
-    &kp PRCNT       &kp AT      &kp LBKT    &kp RBKT    &kp NON_US_BSLH         &trans          &trans          &kp CARET           &trans      &trans
-    &kp HASH        &kp EXCL    &kp LPAR    &kp RPAR    &kp PIPE                &kp UNDER       &kp APOS        &kp DOUBLE_QUOTES   &kp TILDE   &kp GRAVE
-    &kp DLLR        &trans      &kp LBRC    &kp RBRC    &kp AMPS                &trans          &trans          &trans              &trans      &trans
-    &kp N1          &lt 3 DEL   &lt 1 SPACE &kp TAB     &kp N2                  &kp N3          &kp ESC         &kp BSPC            &lt 2 RET   &kp N4
+    &kp LBKT       &kp N7         &kp N8         &kp N9         &kp RBKT         &none   &none          &none          &none          &none
+    &kp SEMI       &kp N4         &kp N5         &kp N6         &kp EQUAL        &none   &kp RSHFT      &kp RGUI       &kp RALT       &kp RCTRL
+    &kp GRAVE      &kp N1         &kp N2         &kp N3         &kp BSLH         &none   &none          &none          &none          &none
+    &trans         &kp DOT        &kp N0         &kp MINUS      &trans           &trans  &none          &trans         &none          &trans
             >;
 
-            sensor-bindings = <
-                &inc_dec_kp PAGE_DOWN PAGE_UP
-                &inc_dec_kp C_VOL_DN C_VOL_UP
-                &inc_dec_kp DOWN UP
-                &inc_dec_kp LEFT RIGHT
-            >;
+            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp DOWN UP>;
         };
 
-        function_layer {
-            display-name = "Function";
-/* FUNC  (hold DEL to reach this layer)
- *
- * ,----------------------------------.                      ,----------------------------------.
- * | BOOT |UNLOCK| BTCLR|USB/BT| Reset|                      | Reset|  F7  |  F8  |  F9  |  F11 |
- * |------+------+------+------+------|                      |------+------+------+------+------|
- * |  BT0 |  BT1 |  BT2 |  BT3 |  BT4 |                      |      |  F4  |  F5  |  F6  |  F12 |
- * |------+------+------+------+------|  ,-----.    ,-----.  |------+------+------+------+------|
- * |      |      |      |      |      |  |  2  |    |  3  |  |  F10 |  F1  |  F2  |  F3  | BOOT |
- * `----------------------------------'  `-----'    `-----'  `----------------------------------'
- *          ,-----.   ,--------------------.            ,--------------------.   ,-----.
- *          |  1  |   | DEL | SPACE | TAB  |            |  ESC  | BS | ENTER |   |  4  |
- *          `-----'   `--------------------'            `--------------------'   `-----'
- *
- * BOOT   = put that half into flashing mode (left BOOT = left half, right BOOT = right half)
- * UNLOCK = unlock ZMK Studio so it can save changes
- * USB/BT = toggle whether keystrokes go to USB or Bluetooth
+        sym_layer {
+            display-name = "Sym";
+/*  hold Enter
+ *  {     &     *     (     }                    .     .     .     .     .
+ *  :     $     %     ^     +                    .     Shift Cmd   Opt   Ctrl
+ *  ~     !     @     #     |                    .     .     .     .     .
+ *              (     )     _                    [held] .    .
  */
             bindings = <
-    &bootloader     &studio_unlock  &bt BT_CLR      &out OUT_TOG    &sys_reset          &sys_reset  &kp F7  &kp F8      &kp F9      &kp F11
-    &bt BT_SEL 0    &bt BT_SEL 1    &bt BT_SEL 2    &bt BT_SEL 3    &bt BT_SEL 4        &trans      &kp F4  &kp F5      &kp F6      &kp F12
-    &trans          &trans          &trans          &trans          &trans              &kp F10     &kp F1  &kp F2      &kp F3      &bootloader
-    &kp N1          &lt 3 DEL       &lt 1 SPACE     &kp TAB         &kp N2              &kp N3      &kp ESC &kp BSPC    &lt 2 RET   &kp N4
+    &kp LBRC       &kp AMPS       &kp STAR       &kp LPAR       &kp RBRC         &none   &none          &none          &none          &none
+    &kp COLON      &kp DLLR       &kp PRCNT      &kp CARET      &kp PLUS         &none   &kp RSHFT      &kp RGUI       &kp RALT       &kp RCTRL
+    &kp TILDE      &kp EXCL       &kp AT         &kp HASH       &kp PIPE         &none   &none          &none          &none          &none
+    &trans         &kp LPAR       &kp RPAR       &kp UNDER      &trans           &trans  &trans         &none          &none          &trans
             >;
 
-            sensor-bindings = <
-                &inc_dec_kp PAGE_DOWN PAGE_UP
-                &inc_dec_kp C_VOL_DN C_VOL_UP
-                &inc_dec_kp DOWN UP
-                &inc_dec_kp LEFT RIGHT
+            sensor-bindings = <&scroll_enc &inc_dec_kp C_VOL_DN C_VOL_UP &tab_enc &inc_dec_kp DOWN UP>;
+        };
+
+        fn_layer {
+            display-name = "Fn";
+/*  hold Esc or Delete
+ *  F12   F7    F8    F9    Shot                 BT1   BT2   BT3   BT4   BTclr
+ *  F11   F4    F5    F6    Unlock               Prev  Vol-  Vol+  Next  Play
+ *  F10   F1    F2    F3    BOOT                 Mute  Bri-  Bri+  USB/BT BOOT
+ *
+ *  Unlock = unlock ZMK Studio. BOOT = put that half into flashing mode.
+ */
+            bindings = <
+    &kp F12        &kp F7         &kp F8         &kp F9         &kp SHOT         &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_CLR
+    &kp F11        &kp F4         &kp F5         &kp F6         &studio_unlock   &kp C_PREV    &kp C_VOL_DN  &kp C_VOL_UP  &kp C_NEXT    &kp C_PP
+    &kp F10        &kp F1         &kp F2         &kp F3         &bootloader      &kp C_MUTE    &kp C_BRI_DN  &kp C_BRI_UP  &out OUT_TOG  &bootloader
+    &trans         &trans         &none          &none          &trans           &trans        &none         &none         &trans        &trans
             >;
+
+            sensor-bindings = <&scroll_enc &inc_dec_kp C_BRI_DN C_BRI_UP &zoom_enc &inc_dec_kp DOWN UP>;
         };
 
         // Spare layers: turn these on and name them in ZMK Studio.
