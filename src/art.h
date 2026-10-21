@@ -3,8 +3,8 @@
 #include <lvgl.h>
 
 // 1-bit bitmaps from tools/make_art.py: one string per row, '#' = lit pixel.
-#define ART_DUCK_W 56
-#define ART_DUCK_H 64
+#define ART_DUCK_W 64
+#define ART_DUCK_H 75
 extern const char *const art_duck[];
 
 #define ART_MOD_SIZE 9

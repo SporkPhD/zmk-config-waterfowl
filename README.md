@@ -12,7 +12,7 @@ The layout is a Mac-flavored take on Miryoku: home-row modifiers (Ctrl, Opt, Cmd
 | `config/waterfowl_left.conf` | Left-half extras: roller scrolling, fetching the right half's battery |
 | `config/waterfowl_right.overlay` | Flips the right screen, which is mounted the other way round |
 | `src/` | The two OLED screens, drawn for the Waterfowl's upright 64 × 128 panels |
-| `tools/make_art.py` | Draws the duck and modifier icons into `src/art.c` |
+| `tools/make_art.py` | The duck head and modifier icons, written to `src/art.c` |
 | `config/info.json` | Same key positions, for Keymap Editor |
 | `build.yaml` | What GitHub builds: left (with Studio), right, settings reset |
 | `firmware/` | Firmware built locally with Docker (ignored by git) |
@@ -85,6 +85,6 @@ The first time, flash **both** halves so they run the same ZMK version.
 Both screens are this repo's own code (`src/`), laid out for the Waterfowl's 128×64 OLEDs mounted upright. Each screen is drawn on a 64×128 canvas and rotated onto the panel.
 
 - **Left:** USB or Bluetooth profile (dot filled when the Mac is connected), battery for both halves, layer name, Ctrl/Opt/Cmd/Shift while held, Bongo Cat tapping along with every key press, and typing speed.
-- **Right:** link to the left half, its battery, and a pixel-art duck. It only redraws when the battery or link changes.
+- **Right:** link to the left half, its battery, and the severed duck head from the PCB, traced to pixels. It only redraws when the battery or link changes.
 
-Both screens turn off when you stop typing. To change the duck or the icons, edit `tools/make_art.py` and run `python3 tools/make_art.py`. Bongo Cat's frames come from [zmk-nice-oled](https://github.com/mctechnology17/zmk-nice-oled) (MIT).
+Both screens turn off when you stop typing. To change the duck head or the icons, edit the bitmaps in `tools/make_art.py` and run `python3 tools/make_art.py`. Bongo Cat's frames come from [zmk-nice-oled](https://github.com/mctechnology17/zmk-nice-oled) (MIT).
