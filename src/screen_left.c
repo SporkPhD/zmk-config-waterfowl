@@ -122,14 +122,16 @@ static void draw(struct k_work *work) {
     screen_battery(&screen, 8, 12, 23, 8, s.battery);
     screen_text(&screen, 33, 12, 8, &lv_font_unscii_8, LV_TEXT_ALIGN_LEFT, "R");
     screen_battery(&screen, 41, 12, 23, 8, s.peripheral_battery);
+    // Numbers are centred under each bar, in areas wide enough for "100"
+    // (3 x 8 px) so it doesn't wrap onto the next line.
     snprintf(text, sizeof(text), "%d", s.battery);
-    screen_text(&screen, 8, 22, 23, &lv_font_unscii_8, LV_TEXT_ALIGN_CENTER, text);
+    screen_text(&screen, 3, 22, 32, &lv_font_unscii_8, LV_TEXT_ALIGN_CENTER, text);
     if (s.peripheral_battery >= 0) {
         snprintf(text, sizeof(text), "%d", s.peripheral_battery);
     } else {
         snprintf(text, sizeof(text), "--");
     }
-    screen_text(&screen, 41, 22, 23, &lv_font_unscii_8, LV_TEXT_ALIGN_CENTER, text);
+    screen_text(&screen, 36, 22, 28, &lv_font_unscii_8, LV_TEXT_ALIGN_CENTER, text);
 
     screen_hline(&screen, 33);
     screen_text(&screen, 0, 38, SCREEN_W, strlen(s.layer) <= 8 ? &lv_font_unscii_16 : &lv_font_unscii_8,
