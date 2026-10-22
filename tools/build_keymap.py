@@ -33,6 +33,9 @@ ENC = {
     "undo": ("beh", "&kp MAC_UNDO", "&kp MAC_REDO", None),
     "none": ("beh", "&none", "&none", None),
 }
+# Timing in ms; the editor page saves overrides in doc["timing"].
+TIMING_DEFAULT = {"hrm_hold": 280, "hrm_streak": 150, "quick_tap": 175, "thumb_hold": 200}
+
 ENC_NAME = {"scroll_v": "scroll_enc", "scroll_h": "hscroll_enc", "tabs": "tab_enc", "words": "word_enc",
             "zoom": "zoom_enc", "undo": "undo_enc", "none": "none_enc"}
 
@@ -105,6 +108,7 @@ def short(b):
 
 def build(doc):
     layers = doc["layers"]
+    t = {**TIMING_DEFAULT, **doc.get("timing", {})}
     consts = {}
     for L in layers:
         c = re.sub(r"[^A-Z0-9]", "_", L["id"].upper())
@@ -164,8 +168,15 @@ def build(doc):
 // tick (63 x 16 / 1000 = 1); ZMK's default of 10 never adds up to a step.
 #define ROLLER_SCROLL 63
 
+// Thumb keys (layer-taps) and tap-and-hold modifiers off the home row.
 &lt {
-    quick-tap-ms = <175>;
+    tapping-term-ms = <__THUMB__>;
+    quick-tap-ms = <__QUICK__>;
+};
+
+&mt {
+    tapping-term-ms = <__THUMB__>;
+    quick-tap-ms = <__QUICK__>;
 };
 
 / {
@@ -178,17 +189,16 @@ def build(doc):
     behaviors {
         // "Timeless" home-row mods: a mod only triggers when the next key is on
         // the other hand, and never in the middle of a fast run of typing.
-""")
+""".replace("__THUMB__", str(t["thumb_hold"])).replace("__QUICK__", str(t["quick_tap"])))
     for name, label, keys in (("hml", "left", "KEYS_R"), ("hmr", "right", "KEYS_L")):
         w(f"""        {name}: homerow_mods_{label} {{
             compatible = "zmk,behavior-hold-tap";
             display-name = "Home Row Mod ({label})";
             #binding-cells = <2>;
             flavor = "balanced";
-            tapping-term-ms = <280>;
-            quick-tap-ms = <175>;
-            require-prior-idle-ms = <150>;
-            bindings = <&kp>, <&kp>;
+            tapping-term-ms = <{t["hrm_hold"]}>;
+            quick-tap-ms = <{t["quick_tap"]}>;
+{f"            require-prior-idle-ms = <{t['hrm_streak']}>;{chr(10)}" if t["hrm_streak"] > 0 else ""}            bindings = <&kp>, <&kp>;
             hold-trigger-key-positions = <{keys} THUMBS>;
             hold-trigger-on-release;
         }};

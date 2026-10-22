@@ -22,7 +22,7 @@ The layout is a Mac-flavored take on Miryoku: home-row modifiers (Ctrl, Opt, Cmd
 ## Changing the layout
 
 1. Open the [Waterfowl Keymap editor](https://claude.ai/artifact/ASKiWb19dV3EnRj4GaPEqy). It draws the board at its real key positions, with every layer, roller and dial.
-2. Click a key and pick what it does. Changes save as you go, and the page shows what's changed since the last flash.
+2. Click a key and pick what it does, or drag one key onto another to swap them. There's also copy/paste, undo/redo, and a **Timing** panel for how long keys must be held before they act as modifiers or layers. Changes save as you go, and the page shows what's changed since the last flash.
 3. Tell Claude **"flash my keymap"**. Claude reads the saved layout into `config/keymap.json`, runs `python3 tools/build_keymap.py config/keymap.json` to regenerate `config/waterfowl.keymap`, builds, pushes and flashes. Keymap changes only need the left half.
 
 `config/waterfowl.keymap` is generated, so don't edit it by hand. Edit the layout on the page, or in `config/keymap.json`, then rerun the script.

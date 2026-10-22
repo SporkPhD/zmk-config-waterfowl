@@ -110,6 +110,27 @@ details.glossary summary { cursor: pointer; font-family: var(--display); font-we
 .layer-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 0.9rem; }
 .layer-tools button { background: none; border: none; color: var(--mallard); cursor: pointer; padding: 2px 4px; text-decoration: underline; text-underline-offset: 3px; }
 .layer-tools button.danger { color: var(--changed); }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 0.9rem; }
+.toolbar button { background: var(--cap); border: 1px solid var(--cap-edge); border-radius: 7px; padding: 4px 12px; cursor: pointer; }
+.toolbar button:disabled { opacity: 0.45; cursor: default; }
+.toolbar .hint { color: var(--muted); }
+.banner { border: 1px solid var(--bill); background: var(--bill-soft); border-radius: 10px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 0.92rem; }
+.banner[hidden], .pill[hidden] { display: none; }
+.banner button { background: var(--cap); border: 1px solid var(--cap-edge); border-radius: 7px; padding: 3px 10px; cursor: pointer; }
+.k { touch-action: none; }
+.k.dragging { opacity: 0.45; }
+.k.drop rect.face, .k.drop circle.face { stroke: var(--bill); stroke-width: 3; }
+.ghost { position: fixed; pointer-events: none; z-index: 20; background: var(--sel); color: var(--sel-ink); font: 700 0.85rem var(--display); padding: 6px 10px; border-radius: 8px; box-shadow: 0 4px 14px rgb(0 0 0 / 0.25); transform: translate(-50%, -120%); white-space: nowrap; }
+.timing { background: var(--cap); border: 1px solid var(--rule); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.timing .sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px 28px; }
+.slider { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.slider .top { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.slider label { font-weight: 700; }
+.slider output { font-family: var(--mono); font-size: 0.9rem; color: var(--mallard); font-variant-numeric: tabular-nums; }
+.slider output.chg { color: var(--changed); }
+.slider input[type="range"] { width: 100%; accent-color: var(--mallard); }
+.slider p { font-size: 0.88rem; color: var(--muted); }
+.slider .ends { display: flex; justify-content: space-between; font-size: 0.75rem; font-family: var(--mono); color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 
@@ -127,6 +148,12 @@ details.glossary summary { cursor: pointer; font-family: var(--display); font-we
 
   <nav class="tabs" id="tabs" aria-label="Layers"></nav>
   <div class="layer-tools" id="layer-tools"></div>
+  <div class="toolbar">
+    <button type="button" id="undo" disabled>Undo</button>
+    <button type="button" id="redo" disabled>Redo</button>
+    <span class="hint">Drag a key onto another to swap them.</span>
+  </div>
+  <div class="banner" id="banner" hidden></div>
 
   <div class="board-wrap"><svg class="board" id="board" role="group" aria-label="Keyboard"></svg></div>
   <div class="legend">
@@ -137,6 +164,15 @@ details.glossary summary { cursor: pointer; font-family: var(--display); font-we
   </div>
 
   <div class="editor" id="editor"><p class="empty">Pick a key on the keyboard to change it.</p></div>
+
+  <section class="timing" id="timing" aria-labelledby="timing-h">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <h2 id="timing-h">Timing</h2>
+      <p style="color:var(--muted);max-width:70ch">How long a key has to be held before it acts as a modifier or a layer. These apply to every tap-and-hold key on every layer. Start from a preset, type with it for a few days, then nudge one slider at a time.</p>
+    </div>
+    <div class="choices" id="timing-presets" role="group" aria-label="Timing presets"></div>
+    <div class="sliders" id="timing-sliders"></div>
+  </section>
 
   <div class="flash" id="flash-box">
     <h3>Putting it on the keyboard</h3>
@@ -197,6 +233,21 @@ const ENC_PRESETS = [
   ["tabs", "Next / previous tab"], ["zoom", "Zoom in / out"], ["pages", "Page down / up"], ["undo", "Undo / redo"], ["none", "Nothing"],
 ];
 const ENC_LABEL = Object.fromEntries(ENC_PRESETS);
+
+// ---------- Timing (milliseconds) ----------
+const TIMING_DEFAULT = { hrm_hold: 280, hrm_streak: 150, quick_tap: 175, thumb_hold: 200 };
+const TIMING_PRESETS = [
+  ["relaxed", "Relaxed", { hrm_hold: 320, hrm_streak: 175, quick_tap: 175, thumb_hold: 240 }],
+  ["balanced", "Balanced", TIMING_DEFAULT],
+  ["quick", "Quick", { hrm_hold: 220, hrm_streak: 120, quick_tap: 150, thumb_hold: 170 }],
+];
+const TIMING_SLIDERS = [
+  ["hrm_hold", "Home-row hold time", 150, 450, 10, "How long you hold A S D F or J K L ' before it becomes Ctrl, Opt, Cmd or Shift.", "faster modifiers", "fewer accidents"],
+  ["hrm_streak", "Typing streak", 0, 300, 10, "While you're typing quickly, home-row keys always type letters if the previous key came within this time. Raise it if you still get stray modifiers; 0 turns it off.", "off", "safer"],
+  ["quick_tap", "Tap-then-hold repeats", 0, 300, 5, "Tap a key, then press and hold it again within this time, and it repeats (\"ooo\", or holding Space) instead of becoming a modifier or layer.", "off", "longer window"],
+  ["thumb_hold", "Thumb hold time", 120, 400, 10, "How long you hold Space, Backspace, Enter, Esc or Del before its layer turns on. Also used by tap-and-hold modifiers off the home row.", "faster layers", "fewer accidents"],
+];
+function timing(doc) { return { ...TIMING_DEFAULT, ...((doc && doc.timing) || {}) }; }
 
 // ---------- Labels ----------
 function keyLabel(k) { return k && KEY_BY[k] ? KEY_BY[k].label : (k || "?"); }
@@ -264,14 +315,95 @@ function changeSummary() {
     L.enc.forEach((e, i) => { if (JSON.stringify(e) !== JSON.stringify(F.enc[i])) out.push(L.name + ": " + ENC_NAMES[i] + " turn"); });
   });
   fl.forEach(F => { if (!state.doc.layers.find(x => x.id === F.id)) out.push("Removed layer: " + F.name); });
+  const t = timing(state.doc), ft = timing(state.flashed);
+  TIMING_SLIDERS.forEach(([k, name]) => { if (t[k] !== ft[k]) out.push("Timing: " + name + " " + ft[k] + " → " + t[k] + " ms"); });
   return out;
 }
 
+// Undo/redo keep whole-layout snapshots.
+const hist = { undo: [], redo: [] };
 function edit(fn) {
+  hist.undo.push(JSON.stringify(state.doc));
+  if (hist.undo.length > 100) hist.undo.shift();
+  hist.redo = [];
   fn(state.doc);
   state.doc.updatedAt = new Date().toISOString();
   render();
   scheduleSave();
+}
+function stepHistory(from, to) {
+  if (!from.length) return;
+  to.push(JSON.stringify(state.doc));
+  state.doc = JSON.parse(from.pop());
+  state.doc.updatedAt = new Date().toISOString();
+  if (state.layer >= state.doc.layers.length) state.layer = 0;
+  render();
+  scheduleSave();
+}
+const undo = () => stepHistory(hist.undo, hist.redo);
+const redo = () => stepHistory(hist.redo, hist.undo);
+document.getElementById("undo").onclick = undo;
+document.getElementById("redo").onclick = redo;
+document.addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("input, select, textarea")) return;
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); }
+  if (e.key === "Escape" && state.swapFrom != null) { state.swapFrom = null; render(); }
+});
+
+// ---------- Moving keys ----------
+function swapKeys(a, b) {
+  edit(d => { const k = d.layers[state.layer].keys; [k[a], k[b]] = [k[b], k[a]]; });
+  state.sel = b; state.swapFrom = null; render();
+}
+function pick(i) {
+  if (state.swapFrom != null) {
+    if (i !== state.swapFrom) { swapKeys(state.swapFrom, i); return; }
+    state.swapFrom = null;
+  }
+  state.sel = i; render();
+  document.getElementById("editor").scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+let drag = null;
+function startDrag(e, i, g) {
+  if (e.button !== 0) return;
+  drag = { i, g, x: e.clientX, y: e.clientY, moved: false, ghost: null, over: null };
+  try { g.setPointerCapture(e.pointerId); } catch (err) { /* drag still works without capture */ }
+  g.addEventListener("pointermove", dragMove);
+  g.addEventListener("pointerup", dragEnd);
+  g.addEventListener("pointercancel", dragEnd);
+}
+function dragTarget(e) {
+  const t = document.elementFromPoint(e.clientX, e.clientY);
+  const k = t && t.closest ? t.closest(".k") : null;
+  return k ? Number(k.dataset.pos) : null;
+}
+function dragMove(e) {
+  if (!drag) return;
+  if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 6) return;
+  if (!drag.moved) {
+    drag.moved = true; drag.g.classList.add("dragging");
+    drag.ghost = document.createElement("div"); drag.ghost.className = "ghost";
+    drag.ghost.textContent = label(state.doc.layers[state.layer].keys[drag.i]).tap || "Same as below";
+    document.body.append(drag.ghost);
+  }
+  drag.ghost.style.left = e.clientX + "px"; drag.ghost.style.top = e.clientY + "px";
+  const over = dragTarget(e);
+  if (over !== drag.over) {
+    document.querySelectorAll(".k.drop").forEach(k => k.classList.remove("drop"));
+    drag.over = over;
+    if (over != null && over !== drag.i) document.querySelector(`.k[data-pos="${over}"]`).classList.add("drop");
+  }
+}
+function dragEnd(e) {
+  if (!drag) return;
+  const d = drag; drag = null;
+  d.g.removeEventListener("pointermove", dragMove); d.g.removeEventListener("pointerup", dragEnd); d.g.removeEventListener("pointercancel", dragEnd);
+  if (d.ghost) d.ghost.remove();
+  document.querySelectorAll(".k.drop, .k.dragging").forEach(k => k.classList.remove("drop", "dragging"));
+  if (e.type === "pointercancel") return;
+  if (!d.moved) { pick(d.i); return; }
+  const to = dragTarget(e);
+  if (to != null && to !== d.i) swapKeys(d.i, to);
 }
 function scheduleSave() {
   if (!state.db) { setPill(); return; }
@@ -407,9 +539,10 @@ function renderBoard() {
       g.append(el("text", { x, y: y + s / 2 + 9, "text-anchor": "middle", "font-family": "var(--mono)", "font-size": 8.5, fill: "var(--muted)" }, t));
     }
     g.append(el("title", {}, POS_NAME(i) + (describe(b) ? ": " + describe(b) : "")));
-    const pick = () => { state.sel = i; render(); document.getElementById("editor").scrollIntoView({ block: "nearest", behavior: "smooth" }); };
-    g.addEventListener("click", pick);
-    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+    g.dataset.pos = i;
+    if (state.swapFrom === i) g.classList.add("dragging");
+    g.addEventListener("pointerdown", e => startDrag(e, i, g));
+    g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(i); } });
     svg.append(g);
   });
   svg.append(el("text", { x: pad + 2.75 * U, y: BOARD_H * U + pad + 4, "text-anchor": "middle", "font-family": "var(--mono)", "font-size": 11, fill: "var(--muted)", "letter-spacing": "0.1em" }, "LEFT"));
@@ -485,6 +618,12 @@ function renderEditor() {
   KINDS.forEach(([k, name]) => kinds.append(btn(name, k === kind, () => setKey(defaultFor(k, b)))));
   left.append(kinds);
   const ex = document.createElement("p"); ex.className = "explain"; ex.textContent = EXPLAIN[kind]; left.append(ex);
+  const moves = document.createElement("div"); moves.className = "choices";
+  const copy = btn("Copy", false, () => { state.clip = JSON.parse(JSON.stringify(b)); render(); });
+  const paste = btn(state.clip ? "Paste “" + (label(state.clip).tap || "Same as below") + "”" : "Paste", false, () => setKey(JSON.parse(JSON.stringify(state.clip))));
+  paste.disabled = !state.clip;
+  const swap = btn("Swap with…", state.swapFrom === i, () => { state.swapFrom = state.swapFrom === i ? null : i; render(); });
+  moves.append(copy, paste, swap); left.append(moves);
 
   const right = document.createElement("section");
   right.append(detailFor(kind, b));
@@ -630,10 +769,44 @@ function renderGlossary() {
 }
 
 // ---------- Boot ----------
+function renderTiming() {
+  const t = timing(state.doc), ft = state.flashed ? timing(state.flashed) : t;
+  const presets = document.getElementById("timing-presets"); presets.replaceChildren();
+  TIMING_PRESETS.forEach(([id, name, vals]) => {
+    const on = Object.keys(vals).every(k => vals[k] === t[k]);
+    presets.append(btn(name, on, () => edit(d => { d.timing = { ...vals }; })));
+  });
+  const box = document.getElementById("timing-sliders"); box.replaceChildren();
+  TIMING_SLIDERS.forEach(([k, name, min, max, step, help, lo, hi]) => {
+    const wrap = document.createElement("div"); wrap.className = "slider";
+    const top = document.createElement("div"); top.className = "top";
+    const lab = document.createElement("label"); lab.htmlFor = "t-" + k; lab.textContent = name;
+    const out = document.createElement("output"); out.htmlFor = "t-" + k;
+    const show = v => { out.textContent = (v === 0 && min === 0 ? "off" : v + " ms") + (v !== ft[k] ? "  (was " + ft[k] + ")" : ""); out.className = v !== ft[k] ? "chg" : ""; };
+    show(t[k]);
+    top.append(lab, out);
+    const r = document.createElement("input"); r.type = "range"; r.id = "t-" + k; r.min = min; r.max = max; r.step = step; r.value = t[k];
+    r.oninput = () => show(Number(r.value));
+    r.onchange = () => edit(d => { d.timing = { ...timing(d), [k]: Number(r.value) }; });
+    const ends = document.createElement("div"); ends.className = "ends";
+    ends.append(Object.assign(document.createElement("span"), { textContent: "← " + lo }), Object.assign(document.createElement("span"), { textContent: hi + " →" }));
+    const p = document.createElement("p"); p.textContent = help;
+    wrap.append(top, r, ends, p); box.append(wrap);
+  });
+}
+function renderBanner() {
+  const bn = document.getElementById("banner");
+  if (state.swapFrom == null) { bn.hidden = true; return; }
+  bn.hidden = false; bn.replaceChildren();
+  const t = document.createElement("span"); t.textContent = "Click the key to swap with " + POS_NAME(state.swapFrom).toLowerCase() + " (" + (label(state.doc.layers[state.layer].keys[state.swapFrom]).tap || "same as below") + ").";
+  bn.append(t, btn("Cancel", false, () => { state.swapFrom = null; render(); }));
+}
 function render() {
   if (!state.doc) return;
   if (state.layer >= state.doc.layers.length) state.layer = 0;
-  renderTabs(); renderBoard(); renderEditor(); setPill();
+  document.getElementById("undo").disabled = !hist.undo.length;
+  document.getElementById("redo").disabled = !hist.redo.length;
+  renderTabs(); renderBanner(); renderBoard(); renderEditor(); renderTiming(); setPill();
 }
 renderGlossary();
 (async () => {

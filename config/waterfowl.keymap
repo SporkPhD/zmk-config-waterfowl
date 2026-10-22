@@ -44,7 +44,14 @@
 // tick (63 x 16 / 1000 = 1); ZMK's default of 10 never adds up to a step.
 #define ROLLER_SCROLL 63
 
+// Thumb keys (layer-taps) and tap-and-hold modifiers off the home row.
 &lt {
+    tapping-term-ms = <200>;
+    quick-tap-ms = <175>;
+};
+
+&mt {
+    tapping-term-ms = <200>;
     quick-tap-ms = <175>;
 };
 
